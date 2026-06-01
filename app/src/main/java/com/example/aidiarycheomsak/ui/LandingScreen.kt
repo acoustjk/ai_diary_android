@@ -46,7 +46,7 @@ fun LandingScreen(
             modifier = Modifier.padding(24.dp)
         ) {
             Text(
-                text = "📝 AI 일기 레벨업",
+                text = "📝 똑똑일기",
                 fontSize = 32.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color(0xFF2B6CB0),

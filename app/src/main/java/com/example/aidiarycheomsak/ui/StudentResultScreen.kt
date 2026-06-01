@@ -274,7 +274,7 @@ fun StudentResultScreen(
                                         action = Intent.ACTION_SEND
                                         putExtra(
                                             Intent.EXTRA_TEXT,
-                                            "✨ [AI 일기 마법 첨삭 보고서] 💮\n\n" +
+                                            "✨ [똑똑일기 마법 첨삭 보고서] 💮\n\n" +
                                                     "👦 작가: $childName 어린이\n" +
                                                     "💮 평가: $stamp\n\n" +
                                                     "선생님의 피드백 힌트를 읽고 스스로 글솜씨를 쑥쑥 레벨업했어요! 아래 링크를 눌러 아이의 일기 성장 보고서를 확인해보세요. 👇\n" +
@@ -398,7 +398,7 @@ fun StudentResultScreen(
                                 action = Intent.ACTION_SEND
                                 putExtra(
                                     Intent.EXTRA_TEXT,
-                                    "✨ [AI 일기 마법 첨삭 보고서] 💮\n\n" +
+                                    "✨ [똑똑일기 마법 첨삭 보고서] 💮\n\n" +
                                             "👦 작가: $childName 어린이\n" +
                                             "💮 평가: $stamp\n\n" +
                                             "선생님의 피드백 힌트를 읽고 스스로 글솜씨를 쑥쑥 레벨업했어요! 아래 링크를 눌러 아이의 일기 성장 보고서를 확인해보세요. 👇\n" +
