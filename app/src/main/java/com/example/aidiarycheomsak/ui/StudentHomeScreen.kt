@@ -360,7 +360,8 @@ fun StudentHomeScreen(
                                 serverUrl = serverUrl,
                                 content = diaryText,
                                 originalContent = if (isRewriteMode) originalContent else null,
-                                feedback = if (isRewriteMode) originalFeedback else null
+                                feedback = if (isRewriteMode) originalFeedback else null,
+                                apiKey = preferenceHelper.geminiApiKey
                             )
 
                             // Apply bonus score if mission succeeded
