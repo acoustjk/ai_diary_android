@@ -48,7 +48,13 @@ object GeminiService {
                 json.decodeFromString<GeminiDiaryResponse>(responseText)
             } else {
                 val errorText = urlConnection.errorStream?.bufferedReader()?.use { it.readText() } ?: ""
-                throw Exception("서버 오류 ($responseCode): $errorText")
+                val friendlyMessage = try {
+                    val jsonObj = org.json.JSONObject(errorText)
+                    jsonObj.optString("detail", errorText)
+                } catch (e: Exception) {
+                    errorText
+                }
+                throw Exception("서버 오류 ($responseCode): $friendlyMessage")
             }
         } finally {
             urlConnection.disconnect()
