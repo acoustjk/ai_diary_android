@@ -1,0 +1,30 @@
+package com.example.aidiarycheomsak.data
+
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
+
+@Serializable
+data class GeminiDiaryResponse(
+    val feedback: String,
+    val spelling_score: Int,
+    val expression_score: Int,
+    val stamp: String,
+    val improved: Boolean = false
+)
+
+@Serializable
+data class DiaryReport(
+    @SerialName("id") val id: String = java.util.UUID.randomUUID().toString(),
+    @SerialName("name") val name: String = "",
+    @SerialName("c1") val originalContent: String,
+    @SerialName("fb") val originalFeedback: String = "",
+    @SerialName("c2") val rewrittenContent: String = "",
+    @SerialName("s1") val firstSpellingScore: Int = 0,
+    @SerialName("e1") val firstExpressionScore: Int = 0,
+    @SerialName("s2") val secondSpellingScore: Int = 0,
+    @SerialName("e2") val secondExpressionScore: Int = 0,
+    @SerialName("st") val stamp: String = "",
+    @SerialName("improved") val improved: Boolean = false,
+    @SerialName("timestamp") val timestamp: Long = System.currentTimeMillis()
+)
+
