@@ -135,54 +135,6 @@ fun SettingsScreen(
             }
 
 
-            // Gemini API Key Settings Card
-            Card(
-                shape = RoundedCornerShape(12.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.White),
-                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Column(
-                    modifier = Modifier.padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    Text(
-                        text = "🔑 개인 Gemini API Key 설정 (선택)",
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color(0xFF2D3748)
-                    )
-
-                    Text(
-                        text = "서버 과부하(503)나 사용량 초과(429) 오류를 방지하려면, 본인의 무료 Gemini API Key를 등록하여 개인 전용 할당량(일 1,500회)으로 빠르게 사용하실 수 있습니다.\n* API Key 발급처: Google AI Studio (무료)",
-                        fontSize = 12.sp,
-                        color = Color(0xFF718096),
-                        lineHeight = 18.sp
-                    )
-
-                    var apiKeyInput by remember { mutableStateOf(preferenceHelper.geminiApiKey) }
-
-                    OutlinedTextField(
-                        value = apiKeyInput,
-                        onValueChange = { apiKeyInput = it },
-                        placeholder = { Text("AI Studio에서 발급받은 API Key 입력") },
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(8.dp),
-                        singleLine = true
-                    )
-
-                    Button(
-                        onClick = {
-                            preferenceHelper.geminiApiKey = apiKeyInput
-                            Toast.makeText(context, "개인 API Key가 저장되었습니다. 🎉", Toast.LENGTH_SHORT).show()
-                        },
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF48BB78)),
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text("API Key 저장")
-                    }
-                }
-            }
         }
     }
 }
