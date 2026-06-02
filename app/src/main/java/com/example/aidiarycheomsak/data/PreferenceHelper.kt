@@ -57,6 +57,30 @@ class PreferenceHelper(context: Context) {
         get() = prefs.getString("child_name", "") ?: ""
         set(value) = prefs.edit().putString("child_name", value).apply()
 
+    var draftDiaryText: String
+        get() = prefs.getString("draft_diary_text", "") ?: ""
+        set(value) = prefs.edit().putString("draft_diary_text", value).apply()
+
+    var draftIsRewriteMode: Boolean
+        get() = prefs.getBoolean("draft_is_rewrite_mode", false)
+        set(value) = prefs.edit().putBoolean("draft_is_rewrite_mode", value).apply()
+
+    var draftOriginalContent: String
+        get() = prefs.getString("draft_original_content", "") ?: ""
+        set(value) = prefs.edit().putString("draft_original_content", value).apply()
+
+    var draftOriginalFeedback: String
+        get() = prefs.getString("draft_original_feedback", "") ?: ""
+        set(value) = prefs.edit().putString("draft_original_feedback", value).apply()
+
+    var draftPrevSpelling: Int
+        get() = prefs.getInt("draft_prev_spelling", 0)
+        set(value) = prefs.edit().putInt("draft_prev_spelling", value).apply()
+
+    var draftPrevExpression: Int
+        get() = prefs.getInt("draft_prev_expression", 0)
+        set(value) = prefs.edit().putInt("draft_prev_expression", value).apply()
+
     fun getSavedReports(): List<DiaryReport> {
         val jsonStr = prefs.getString("saved_reports", null) ?: return emptyList()
         return try {

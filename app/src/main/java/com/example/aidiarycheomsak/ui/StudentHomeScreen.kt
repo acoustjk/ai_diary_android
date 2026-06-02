@@ -13,6 +13,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -44,20 +45,42 @@ fun StudentHomeScreen(
     val scope = rememberCoroutineScope()
 
     // State variables
-    var diaryText by remember { mutableStateOf("") }
-    var charCount by remember { mutableIntStateOf(0) }
-    var isLoading by remember { mutableStateOf(false) }
+    var diaryText by rememberSaveable { mutableStateOf("") }
+    var charCount by rememberSaveable { mutableIntStateOf(0) }
+    var isLoading by rememberSaveable { mutableStateOf(false) }
 
     // Mission Words (Selected randomly once)
     val wordPool = remember { listOf("행복", "초콜릿", "하늘", "우당탕탕", "친구", "컴퓨터", "선생님", "강아지", "자전거", "비밀", "맛있는", "가족") }
-    val missionWords = remember { wordPool.shuffled().take(3) }
+    var missionWordsString by rememberSaveable { mutableStateOf("") }
+    val missionWords = remember(missionWordsString) {
+        if (missionWordsString.isEmpty()) {
+            val words = wordPool.shuffled().take(3)
+            missionWordsString = words.joinToString(",")
+            words
+        } else {
+            missionWordsString.split(",")
+        }
+    }
 
     // Rewrite mode state (passed in via local storage or memory)
-    var isRewriteMode by remember { mutableStateOf(false) }
-    var originalContent by remember { mutableStateOf("") }
-    var originalFeedback by remember { mutableStateOf("") }
-    var prevSpelling by remember { mutableIntStateOf(0) }
-    var prevExpression by remember { mutableIntStateOf(0) }
+    var isRewriteMode by rememberSaveable { mutableStateOf(false) }
+    var originalContent by rememberSaveable { mutableStateOf("") }
+    var originalFeedback by rememberSaveable { mutableStateOf("") }
+    var prevSpelling by rememberSaveable { mutableIntStateOf(0) }
+    var prevExpression by rememberSaveable { mutableIntStateOf(0) }
+
+    // Load draft on initial composition
+    LaunchedEffect(Unit) {
+        if (preferenceHelper.draftDiaryText.isNotEmpty()) {
+            diaryText = preferenceHelper.draftDiaryText
+            charCount = diaryText.length
+            isRewriteMode = preferenceHelper.draftIsRewriteMode
+            originalContent = preferenceHelper.draftOriginalContent
+            originalFeedback = preferenceHelper.draftOriginalFeedback
+            prevSpelling = preferenceHelper.draftPrevSpelling
+            prevExpression = preferenceHelper.draftPrevExpression
+        }
+    }
 
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner) {
@@ -75,6 +98,14 @@ fun StudentHomeScreen(
                     charCount = diaryText.length
 
                     preferenceHelper.isRewriteModePending = false
+
+                    // Save to persistent draft
+                    preferenceHelper.draftDiaryText = diaryText
+                    preferenceHelper.draftIsRewriteMode = true
+                    preferenceHelper.draftOriginalContent = originalContent
+                    preferenceHelper.draftOriginalFeedback = originalFeedback
+                    preferenceHelper.draftPrevSpelling = prevSpelling
+                    preferenceHelper.draftPrevExpression = prevExpression
                 } else if (preferenceHelper.clearDiaryTextPending) {
                     diaryText = ""
                     charCount = 0
@@ -85,6 +116,14 @@ fun StudentHomeScreen(
                     prevExpression = 0
                     
                     preferenceHelper.clearDiaryTextPending = false
+
+                    // Clear persistent draft
+                    preferenceHelper.draftDiaryText = ""
+                    preferenceHelper.draftIsRewriteMode = false
+                    preferenceHelper.draftOriginalContent = ""
+                    preferenceHelper.draftOriginalFeedback = ""
+                    preferenceHelper.draftPrevSpelling = 0
+                    preferenceHelper.draftPrevExpression = 0
                 }
             }
         }
@@ -296,6 +335,16 @@ fun StudentHomeScreen(
                         }
                         IconButton(onClick = {
                             isRewriteMode = false
+                            originalContent = ""
+                            originalFeedback = ""
+                            prevSpelling = 0
+                            prevExpression = 0
+                            
+                            preferenceHelper.draftIsRewriteMode = false
+                            preferenceHelper.draftOriginalContent = ""
+                            preferenceHelper.draftOriginalFeedback = ""
+                            preferenceHelper.draftPrevSpelling = 0
+                            preferenceHelper.draftPrevExpression = 0
                         }) {
                             Icon(imageVector = Icons.Default.Close, contentDescription = "취소", tint = Color(0xFF553C9A))
                         }
@@ -314,6 +363,7 @@ fun StudentHomeScreen(
                         } else {
                             diaryText = newValue
                             charCount = newValue.length
+                            preferenceHelper.draftDiaryText = newValue
                         }
                     },
                     placeholder = { Text("오늘 하루는 어땠나요? 오늘의 비밀 단어를 넣어서 신나게 적어보세요!") },
@@ -413,6 +463,14 @@ fun StudentHomeScreen(
                                 isRewriteMode = false
                             }
 
+                            // Clear persistent draft on success
+                            preferenceHelper.draftDiaryText = ""
+                            preferenceHelper.draftIsRewriteMode = false
+                            preferenceHelper.draftOriginalContent = ""
+                            preferenceHelper.draftOriginalFeedback = ""
+                            preferenceHelper.draftPrevSpelling = 0
+                            preferenceHelper.draftPrevExpression = 0
+
                         } catch (e: Exception) {
                             Toast.makeText(context, "AI 선생님 연결 실패: ${e.localizedMessage}", Toast.LENGTH_LONG).show()
                         } finally {
@@ -447,6 +505,14 @@ fun StudentHomeScreen(
                         prevSpelling = 70
                         prevExpression = 75
                         isRewriteMode = true
+
+                        // Save to persistent draft
+                        preferenceHelper.draftDiaryText = diaryText
+                        preferenceHelper.draftIsRewriteMode = true
+                        preferenceHelper.draftOriginalContent = originalContent
+                        preferenceHelper.draftOriginalFeedback = originalFeedback
+                        preferenceHelper.draftPrevSpelling = prevSpelling
+                        preferenceHelper.draftPrevExpression = prevExpression
                     },
                     modifier = Modifier.fillMaxWidth()
                 ) {
