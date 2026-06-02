@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "123456789012",
-    "project_id": "dummy-project",
-    "storage_bucket": "dummy-project.appspot.com"
+    "project_number": "400225425219",
+    "project_id": "toktok-diary",
+    "storage_bucket": "toktok-diary.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:123456789012:android:1234567890abcdef",
+        "mobilesdk_app_id": "1:400225425219:android:3030413dece4179b9641f6",
         "android_client_info": {
           "package_name": "com.example.aidiarycheomsak"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "dummy_api_key"
+          "current_key": "AIzaSyCEDJy7Mlsbd-FW10XhkqtMvW1VtuAjY9E"
         }
       ],
       "services": {
