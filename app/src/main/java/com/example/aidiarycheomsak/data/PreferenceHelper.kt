@@ -81,6 +81,17 @@ class PreferenceHelper(context: Context) {
         get() = prefs.getInt("draft_prev_expression", 0)
         set(value) = prefs.edit().putInt("draft_prev_expression", value).apply()
 
+    var childId: String
+        get() {
+            var id = prefs.getString("child_id", "") ?: ""
+            if (id.isEmpty()) {
+                id = java.util.UUID.randomUUID().toString()
+                prefs.edit().putString("child_id", id).apply()
+            }
+            return id
+        }
+        set(value) = prefs.edit().putString("child_id", value).apply()
+
     fun getSavedReports(): List<DiaryReport> {
         val jsonStr = prefs.getString("saved_reports", null) ?: return emptyList()
         return try {

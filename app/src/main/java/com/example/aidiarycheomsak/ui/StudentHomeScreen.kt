@@ -26,6 +26,8 @@ import androidx.compose.ui.draw.alpha
 import com.example.aidiarycheomsak.data.DiaryReport
 import com.example.aidiarycheomsak.data.GeminiService
 import com.example.aidiarycheomsak.data.PreferenceHelper
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.compose.ui.platform.LocalLifecycleOwner
@@ -434,6 +436,7 @@ fun StudentHomeScreen(
 
                             // Save this draft into parent records (to trigger "Parent Report" export)
                             val report = DiaryReport(
+                                name = preferenceHelper.childName.ifBlank { "무명 어린이" },
                                 originalContent = if (isRewriteMode) originalContent else diaryText,
                                 originalFeedback = if (isRewriteMode) originalFeedback else res.feedback,
                                 rewrittenContent = if (isRewriteMode) diaryText else "",
@@ -445,6 +448,27 @@ fun StudentHomeScreen(
                                 improved = res.improved
                             )
                             preferenceHelper.saveReport(report)
+
+                            // Save to Firebase Firestore under children/{childId}/diaries/{diaryId}
+                            val db = FirebaseFirestore.getInstance()
+                            val diaryId = report.id
+                            val diaryData = mapOf(
+                                "diaryId" to diaryId,
+                                "timestamp" to report.timestamp,
+                                "name" to report.name,
+                                "originalContent" to report.originalContent,
+                                "originalFeedback" to report.originalFeedback,
+                                "rewrittenContent" to report.rewrittenContent,
+                                "firstSpellingScore" to report.firstSpellingScore,
+                                "firstExpressionScore" to report.firstExpressionScore,
+                                "secondSpellingScore" to report.secondSpellingScore,
+                                "secondExpressionScore" to report.secondExpressionScore,
+                                "stamp" to report.stamp,
+                                "improved" to report.improved
+                            )
+                            db.collection("children").document(preferenceHelper.childId)
+                                .collection("diaries").document(diaryId)
+                                .set(diaryData, SetOptions.merge())
 
                             onNavigateToResult(
                                 if (isRewriteMode) originalContent else diaryText,

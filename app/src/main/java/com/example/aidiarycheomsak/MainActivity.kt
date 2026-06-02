@@ -16,11 +16,19 @@ import com.example.aidiarycheomsak.data.DiaryReport
 import com.example.aidiarycheomsak.data.PreferenceHelper
 import com.example.aidiarycheomsak.theme.AiDiaryCheomsakTheme
 import kotlinx.serialization.json.Json
+import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     enableEdgeToEdge()
+    
+    // Anonymous Sign In to Firebase on startup
+    FirebaseAuth.getInstance().signInAnonymously()
+      .addOnFailureListener {
+        Toast.makeText(this, "Firebase 연결 실패: ${it.localizedMessage}", Toast.LENGTH_SHORT).show()
+      }
+      
     setContent {
       AiDiaryCheomsakTheme {
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {

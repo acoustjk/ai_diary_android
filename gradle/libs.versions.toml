@@ -13,6 +13,8 @@ junit = "4.13.2"
 kotlin = "2.3.20"
 nav3Core = "1.0.1"
 lifecycleViewmodelNav3 = "2.10.0"
+firebaseBom = "33.1.0"
+googleServicesPlugin = "4.4.2"
 
 [libraries]
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidxCore" }
@@ -38,8 +40,12 @@ androidx-navigation3-ui = { module = "androidx.navigation3:navigation3-ui", vers
 androidx-lifecycle-viewmodel-navigation3 = { module = "androidx.lifecycle:lifecycle-viewmodel-navigation3", version.ref = "lifecycleViewmodelNav3" }
 androidx-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended" }
 generativeai = { group = "com.google.ai.client.generativeai", name = "generativeai", version = "0.9.0" }
+firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
+firebase-auth = { group = "com.google.firebase", name = "firebase-auth-ktx" }
+firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore-ktx" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+google-services = { id = "com.google.gms.google-services", version.ref = "googleServicesPlugin" }
