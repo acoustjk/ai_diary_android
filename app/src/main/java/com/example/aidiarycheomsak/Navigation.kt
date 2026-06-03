@@ -84,6 +84,9 @@ fun MainNavigation(initialReportId: State<String?>) {
                 onBack = {
                     backStack.removeLastOrNull()
                 },
+                onNavigateToSettings = {
+                    backStack.add(Settings)
+                },
                 modifier = Modifier.safeDrawingPadding()
             )
         }

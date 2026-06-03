@@ -2,6 +2,7 @@ package com.example.aidiarycheomsak.ui
 
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -70,6 +71,22 @@ fun StudentHomeScreen(
     var originalFeedback by rememberSaveable { mutableStateOf("") }
     var prevSpelling by rememberSaveable { mutableIntStateOf(0) }
     var prevExpression by rememberSaveable { mutableIntStateOf(0) }
+
+    var pairedReviewersList by remember { mutableStateOf<List<Map<String, String>>>(emptyList()) }
+
+    // Listen to child profile document to fetch connected reviewers in real-time
+    DisposableEffect(preferenceHelper.childId) {
+        val docRef = FirebaseFirestore.getInstance().collection("children").document(preferenceHelper.childId)
+        val registration = docRef.addSnapshotListener { snapshot, e ->
+            if (snapshot != null && snapshot.exists()) {
+                val reviewers = snapshot.get("pairedReviewers") as? List<Map<String, String>>
+                pairedReviewersList = reviewers ?: emptyList()
+            }
+        }
+        onDispose {
+            registration.remove()
+        }
+    }
 
     // Load draft on initial composition
     LaunchedEffect(Unit) {
@@ -199,6 +216,61 @@ fun StudentHomeScreen(
                         ),
                         modifier = Modifier.weight(1f)
                     )
+                }
+            }
+
+            // 🔗 부모님 연결 상태 카드
+            Card(
+                shape = RoundedCornerShape(12.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = if (pairedReviewersList.isEmpty()) Color(0xFFFFF5F5) else Color(0xFFF0FDF4)
+                ),
+                border = BorderStroke(
+                    1.dp,
+                    if (pairedReviewersList.isEmpty()) Color(0xFFFEB2B2) else Color(0xFFBBF7D0)
+                ),
+                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onNavigateToSettings() }
+            ) {
+                Row(
+                    modifier = Modifier.padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    if (pairedReviewersList.isEmpty()) {
+                        Text(text = "⚠️", fontSize = 20.sp)
+                        Column {
+                            Text(
+                                text = "부모님 앱과 연결되어 있지 않아요",
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 14.sp,
+                                color = Color(0xFFC53030)
+                            )
+                            Text(
+                                text = "여기를 눌러 연결 코드(6자리)를 확인하세요.",
+                                fontSize = 12.sp,
+                                color = Color(0xFF9B2C2C)
+                            )
+                        }
+                    } else {
+                        Text(text = "✅", fontSize = 20.sp)
+                        Column {
+                            val names = pairedReviewersList.map { it["name"] ?: "보호자" }.joinToString(", ")
+                            Text(
+                                text = "부모님 앱과 연결되었습니다",
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 14.sp,
+                                color = Color(0xFF15803D)
+                            )
+                            Text(
+                                text = "연결된 보호자: $names (일기가 자동으로 전송됩니다)",
+                                fontSize = 12.sp,
+                                color = Color(0xFF166534)
+                            )
+                        }
+                    }
                 }
             }
 
