@@ -252,50 +252,86 @@ fun StudentResultScreen(
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                if (rewrittenContent.isNotEmpty()) {
-                    if (pairedReviewersList.isEmpty()) {
-                        // Not paired: Warn child to pair so parent can receive it
+                if (pairedReviewersList.isEmpty()) {
+                    // Not paired: Show warning for both 1st and 2nd draft stages
+                    Card(
+                        shape = RoundedCornerShape(12.dp),
+                        colors = CardDefaults.cardColors(containerColor = Color(0xFFFFF5F5)),
+                        border = BorderStroke(1.dp, Color(0xFFFEB2B2)),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(16.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                            ) {
+                                Text("⚠️", fontSize = 24.sp)
+                                Column {
+                                    Text(
+                                        text = "부모님 앱과 연결되어 있지 않습니다",
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 14.sp,
+                                        color = Color(0xFFC53030)
+                                    )
+                                    Text(
+                                        text = if (rewrittenContent.isEmpty()) {
+                                            "선생님의 힌트를 보고 일기를 고쳐 쓰더라도 부모님이 보실 수 없습니다. 먼저 기기 연결(페어링)을 진행해 주세요."
+                                        } else {
+                                            "일기는 저장되었으나, 부모님이 실시간으로 보시려면 기기 연결(페어링)이 필요합니다."
+                                        },
+                                        fontSize = 12.sp,
+                                        color = Color(0xFF9B2C2C),
+                                        lineHeight = 18.sp
+                                    )
+                                }
+                            }
+                            Button(
+                                onClick = onNavigateToSettings,
+                                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE53E3E)),
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Text("기기 연결(페어링) 설정하러 가기")
+                            }
+                        }
+                    }
+                } else {
+                    // Paired: Show different message for 1st and 2nd draft stages
+                    if (rewrittenContent.isEmpty()) {
+                        // 1st draft: Show info that rewrite is needed to send
                         Card(
                             shape = RoundedCornerShape(12.dp),
-                            colors = CardDefaults.cardColors(containerColor = Color(0xFFFFF5F5)),
-                            border = BorderStroke(1.dp, Color(0xFFFEB2B2)),
+                            colors = CardDefaults.cardColors(containerColor = Color(0xFFF0FDF4)),
+                            border = BorderStroke(1.dp, Color(0xFFBBF7D0)),
                             modifier = Modifier.fillMaxWidth()
                         ) {
-                            Column(
+                            Row(
                                 modifier = Modifier.padding(16.dp),
-                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(12.dp)
                             ) {
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(12.dp)
-                                ) {
-                                    Text("⚠️", fontSize = 24.sp)
-                                    Column {
-                                        Text(
-                                            text = "부모님 앱과 연결되어 있지 않습니다",
-                                            fontWeight = FontWeight.Bold,
-                                            fontSize = 14.sp,
-                                            color = Color(0xFFC53030)
-                                        )
-                                        Text(
-                                            text = "일기는 저장되었으나, 부모님이 실시간으로 보시려면 기기 연결(페어링)이 필요합니다.",
-                                            fontSize = 12.sp,
-                                            color = Color(0xFF9B2C2C),
-                                            lineHeight = 18.sp
-                                        )
-                                    }
-                                }
-                                Button(
-                                    onClick = onNavigateToSettings,
-                                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE53E3E)),
-                                    modifier = Modifier.fillMaxWidth()
-                                ) {
-                                    Text("기기 연결(페어링) 설정하러 가기")
+                                Text("✅", fontSize = 24.sp)
+                                Column {
+                                    val names = pairedReviewersList.map { it["name"] ?: "보호자" }.joinToString(", ")
+                                    Text(
+                                        text = "부모님 앱과 연결되어 있습니다",
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 14.sp,
+                                        color = Color(0xFF15803D)
+                                    )
+                                    Text(
+                                        text = "연결된 분: $names\n아래의 '다시 고쳐 쓰러 가기' 버튼을 눌러 일기를 수정하고 완료하면 보고서가 자동으로 전송됩니다.",
+                                        fontSize = 12.sp,
+                                        color = Color(0xFF166534),
+                                        lineHeight = 18.sp
+                                    )
                                 }
                             }
                         }
                     } else {
-                        // Paired: Show success card
+                        // 2nd draft (completed rewrite): Show success report sent card
                         Card(
                             shape = RoundedCornerShape(12.dp),
                             colors = CardDefaults.cardColors(containerColor = Color(0xFFF0FDF4)),
@@ -326,15 +362,6 @@ fun StudentResultScreen(
                             }
                         }
                     }
-                } else {
-                    // Let the user know they can complete the flow by rewriting
-                    Text(
-                        text = "💡 AI 선생님의 힌트를 읽고 아래 버튼을 눌러 일기를 고쳐 쓰면 분석 완료 보고서가 부모님 앱으로 자동 전송됩니다!",
-                        fontSize = 12.sp,
-                        color = Color(0xFF718096),
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)
-                    )
                 }
 
                 // Go back button
