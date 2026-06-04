@@ -16,7 +16,9 @@ object GeminiService {
         content: String,
         originalContent: String? = null,
         feedback: String? = null,
-        apiKey: String? = null
+        apiKey: String? = null,
+        childId: String? = null,
+        childName: String? = null
     ): GeminiDiaryResponse = withContext(Dispatchers.IO) {
         val cleanUrl = serverUrl.trim().removeSuffix("/")
         val urlConnection = URL("$cleanUrl/check-diary").openConnection() as HttpURLConnection
@@ -38,6 +40,12 @@ object GeminiService {
             }
             if (!apiKey.isNullOrBlank()) {
                 payload["api_key"] = apiKey
+            }
+            if (!childId.isNullOrBlank()) {
+                payload["child_id"] = childId
+            }
+            if (!childName.isNullOrBlank()) {
+                payload["child_name"] = childName
             }
             val requestBody = json.encodeToString(payload)
 

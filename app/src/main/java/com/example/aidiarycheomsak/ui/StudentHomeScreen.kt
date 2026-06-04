@@ -488,7 +488,9 @@ fun StudentHomeScreen(
                                 content = diaryText,
                                 originalContent = if (isRewriteMode) originalContent else null,
                                 feedback = if (isRewriteMode) originalFeedback else null,
-                                apiKey = preferenceHelper.geminiApiKey
+                                apiKey = preferenceHelper.geminiApiKey,
+                                childId = preferenceHelper.childId,
+                                childName = preferenceHelper.childName
                             )
 
                             // Apply bonus score if mission succeeded
