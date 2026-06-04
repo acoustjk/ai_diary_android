@@ -21,6 +21,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.draw.alpha
@@ -210,6 +211,7 @@ fun StudentHomeScreen(
                         },
                         placeholder = { Text("이름을 입력해 주세요") },
                         singleLine = true,
+                        textStyle = TextStyle(color = Color.Black),
                         colors = TextFieldDefaults.colors(
                             focusedContainerColor = Color(0xFFF7FAFC),
                             unfocusedContainerColor = Color(0xFFF7FAFC)
@@ -441,6 +443,7 @@ fun StudentHomeScreen(
                         }
                     },
                     placeholder = { Text("오늘 하루는 어땠나요? 오늘의 비밀 단어를 넣어서 신나게 적어보세요!") },
+                    textStyle = TextStyle(color = Color.Black),
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(240.dp),

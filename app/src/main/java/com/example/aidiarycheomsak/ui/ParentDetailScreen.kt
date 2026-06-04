@@ -20,6 +20,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -214,6 +215,7 @@ fun ParentDetailScreen(
                         value = replyText,
                         onValueChange = { replyText = it },
                         placeholder = { Text("예) 우리 ${report.name} 정말 대단해! 스스로 일기를 고쳐 쓰다니 멋지다~ 오늘 맛있는 거 먹자!") },
+                        textStyle = TextStyle(color = Color.Black),
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(8.dp),
                         colors = TextFieldDefaults.colors(
