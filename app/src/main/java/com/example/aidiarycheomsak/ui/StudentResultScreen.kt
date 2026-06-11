@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.activity.compose.BackHandler
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -62,6 +63,23 @@ fun StudentResultScreen(
     var showNameDialog by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
 
+    val handleBack = {
+        if (rewrittenContent.isNotEmpty()) {
+            // Completed rewrite: prepare to clear input field for a new diary
+            preferenceHelper.clearDiaryTextPending = true
+        } else {
+            // First draft completed: prepare to enter rewrite mode
+            preferenceHelper.isRewriteModePending = true
+            preferenceHelper.pendingOriginalContent = originalContent
+            preferenceHelper.pendingOriginalFeedback = feedback
+            preferenceHelper.pendingSpellingScore = spellingScore
+            preferenceHelper.pendingExpressionScore = expressionScore
+        }
+        onBack()
+    }
+
+    BackHandler(onBack = handleBack)
+
     var pairedReviewersList by remember { mutableStateOf<List<Map<String, String>>>(emptyList()) }
 
     // Listen to child profile document to fetch connected reviewers in real-time
@@ -101,7 +119,7 @@ fun StudentResultScreen(
             TopAppBar(
                 title = { Text("👩‍🏫 마법 힌트 & 결과", fontWeight = FontWeight.Bold) },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
+                    IconButton(onClick = handleBack) {
                         Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "뒤로가기")
                     }
                 },
@@ -366,20 +384,7 @@ fun StudentResultScreen(
 
                 // Go back button
                 OutlinedButton(
-                    onClick = {
-                        if (rewrittenContent.isNotEmpty()) {
-                            // Completed rewrite: prepare to clear input field for a new diary
-                            preferenceHelper.clearDiaryTextPending = true
-                        } else {
-                            // First draft completed: prepare to enter rewrite mode
-                            preferenceHelper.isRewriteModePending = true
-                            preferenceHelper.pendingOriginalContent = originalContent
-                            preferenceHelper.pendingOriginalFeedback = feedback
-                            preferenceHelper.pendingSpellingScore = spellingScore
-                            preferenceHelper.pendingExpressionScore = expressionScore
-                        }
-                        onBack()
-                    },
+                    onClick = handleBack,
                     shape = RoundedCornerShape(8.dp),
                     modifier = Modifier
                         .fillMaxWidth()
