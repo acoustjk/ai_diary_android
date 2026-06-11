@@ -74,20 +74,45 @@ fun StudentHomeScreen(
     var prevExpression by rememberSaveable { mutableIntStateOf(0) }
 
     var pairedReviewersList by remember { mutableStateOf<List<Map<String, String>>>(emptyList()) }
+    var credits by remember { mutableIntStateOf(3) }
+    var showNoCreditDialog by remember { mutableStateOf(false) }
 
-    // Listen to child profile document to fetch connected reviewers in real-time
+    // Listen to child profile document to fetch connected reviewers & credits in real-time
     DisposableEffect(preferenceHelper.childId) {
         val docRef = FirebaseFirestore.getInstance().collection("children").document(preferenceHelper.childId)
         val registration = docRef.addSnapshotListener { snapshot, e ->
-            if (snapshot != null && snapshot.exists()) {
-                val reviewers = snapshot.get("pairedReviewers") as? List<Map<String, String>>
-                pairedReviewersList = reviewers ?: emptyList()
+            if (snapshot != null) {
+                if (snapshot.exists()) {
+                    val reviewers = snapshot.get("pairedReviewers") as? List<Map<String, String>>
+                    pairedReviewersList = reviewers ?: emptyList()
+                    
+                    val serverCredits = snapshot.getLong("credits")
+                    if (serverCredits != null) {
+                        credits = serverCredits.toInt()
+                    } else {
+                        // Document exists but no credits field, initialize it
+                        docRef.update("credits", 3, "totalCreditsGranted", 3)
+                        credits = 3
+                    }
+                } else {
+                    // Document does not exist yet. Initialize it with 3 credits!
+                    val initialData = mapOf(
+                        "childId" to preferenceHelper.childId,
+                        "childName" to preferenceHelper.childName.ifBlank { "무명 어린이" },
+                        "credits" to 3,
+                        "totalCreditsGranted" to 3,
+                        "pairedReviewers" to emptyList<Map<String, String>>()
+                    )
+                    docRef.set(initialData)
+                    credits = 3
+                }
             }
         }
         onDispose {
             registration.remove()
         }
     }
+
 
     // Load draft on initial composition
     LaunchedEffect(Unit) {
@@ -219,6 +244,36 @@ fun StudentHomeScreen(
                         ),
                         modifier = Modifier.weight(1f)
                     )
+                }
+            }
+
+            // 🪙 남은 크레딧 카드
+            Card(
+                shape = RoundedCornerShape(12.dp),
+                colors = CardDefaults.cardColors(containerColor = Color(0xFFFFFDF5)),
+                border = BorderStroke(1.dp, Color(0xFFFBD38D)),
+                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Row(
+                    modifier = Modifier.padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Text(text = "🪙", fontSize = 24.sp)
+                    Column {
+                        Text(
+                            text = "남은 크레딧: ${credits}개",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 15.sp,
+                            color = Color(0xFFB7791F)
+                        )
+                        Text(
+                            text = "일기 1회 분석 시작 시 1 크레딧이 차감됩니다.",
+                            fontSize = 12.sp,
+                            color = Color(0xFF744210)
+                        )
+                    }
                 }
             }
 
@@ -478,6 +533,10 @@ fun StudentHomeScreen(
                         Toast.makeText(context, "일기 내용을 입력해주세요!", Toast.LENGTH_SHORT).show()
                         return@Button
                     }
+                    if (credits <= 0 && !isRewriteMode) {
+                        showNoCreditDialog = true
+                        return@Button
+                    }
 
                     // Check mission success
                     val missionSuccess = missionWords.all { diaryText.contains(it) }
@@ -632,6 +691,19 @@ fun StudentHomeScreen(
                 }
             }
         }
+    }
+
+    if (showNoCreditDialog) {
+        AlertDialog(
+            onDismissRequest = { showNoCreditDialog = false },
+            title = { Text("🪙 크레딧 부족", fontWeight = FontWeight.Bold, color = Color.Black) },
+            text = { Text("무료 크레딧을 모두 사용했어요!\n부모님 스마트폰 앱에서 크레딧을 충전해 달라고 말씀드려 보세요. 😊", color = Color.DarkGray) },
+            confirmButton = {
+                Button(onClick = { showNoCreditDialog = false }) {
+                    Text("확인")
+                }
+            }
+        )
     }
 }
 
