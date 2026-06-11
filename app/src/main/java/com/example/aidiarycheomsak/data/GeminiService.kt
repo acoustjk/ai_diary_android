@@ -72,4 +72,40 @@ object GeminiService {
             urlConnection.disconnect()
         }
     }
+
+    suspend fun requestCredits(
+        serverUrl: String,
+        childId: String,
+        childName: String
+    ): Boolean = withContext(Dispatchers.IO) {
+        val cleanUrl = serverUrl.trim().removeSuffix("/")
+        val urlConnection = URL("$cleanUrl/request-credits").openConnection() as HttpURLConnection
+        try {
+            urlConnection.requestMethod = "POST"
+            urlConnection.setRequestProperty("Content-Type", "application/json")
+            urlConnection.setRequestProperty("Accept", "application/json")
+            urlConnection.doOutput = true
+            urlConnection.connectTimeout = 15000
+            urlConnection.readTimeout = 15000
+
+            val payload = mapOf(
+                "child_id" to childId,
+                "child_name" to childName
+            )
+            val requestBody = json.encodeToString(payload)
+
+            OutputStreamWriter(urlConnection.outputStream).use { writer ->
+                writer.write(requestBody)
+                writer.flush()
+            }
+
+            val responseCode = urlConnection.responseCode
+            responseCode == HttpURLConnection.HTTP_OK
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        } finally {
+            urlConnection.disconnect()
+        }
+    }
 }

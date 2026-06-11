@@ -702,6 +702,31 @@ fun StudentHomeScreen(
                 Button(onClick = { showNoCreditDialog = false }) {
                     Text("확인")
                 }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = {
+                        showNoCreditDialog = false
+                        scope.launch {
+                            try {
+                                val success = GeminiService.requestCredits(
+                                    serverUrl = serverUrl,
+                                    childId = preferenceHelper.childId,
+                                    childName = preferenceHelper.childName
+                                )
+                                if (success) {
+                                    Toast.makeText(context, "부모님께 크레딧 충전 요청을 보냈어요! 💌", Toast.LENGTH_SHORT).show()
+                                } else {
+                                    Toast.makeText(context, "충전 요청 전송에 실패했어요. 😢", Toast.LENGTH_SHORT).show()
+                                }
+                            } catch (e: Exception) {
+                                Toast.makeText(context, "오류가 발생했습니다: ${e.message}", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
+                ) {
+                    Text("부모님께 충전 요청하기", color = Color(0xFFE53E3E), fontWeight = FontWeight.Bold)
+                }
             }
         )
     }
