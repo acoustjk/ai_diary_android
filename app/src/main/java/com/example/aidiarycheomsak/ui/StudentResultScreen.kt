@@ -232,7 +232,7 @@ fun StudentResultScreen(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Text(
-                        text = "👩‍🏫 AI 선생님의 마법 피드백",
+                        text = "👾 AI고치의 다정한 피드백",
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF2D3748),
                         fontSize = 15.sp
@@ -278,7 +278,7 @@ fun StudentResultScreen(
                                     )
                                     Text(
                                         text = if (rewrittenContent.isEmpty()) {
-                                            "선생님의 힌트를 보고 일기를 고쳐 쓰더라도 부모님이 보실 수 없습니다. 먼저 기기 연결(페어링)을 진행해 주세요."
+                                            "AI고치의 힌트를 보고 일기를 고쳐 쓰더라도 부모님이 보실 수 없어. 먼저 기기 연결(페어링)을 진행해줘!"
                                         } else {
                                             "일기는 저장되었으나, 부모님이 실시간으로 보시려면 기기 연결(페어링)이 필요합니다."
                                         },

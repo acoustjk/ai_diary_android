@@ -152,7 +152,7 @@ fun ParentDetailScreen(
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(
-                        text = "👩‍🏫 AI 선생님의 마법 힌트",
+                        text = "👾 AI고치의 다정한 피드백",
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFFDD6B20),
                         fontSize = 14.sp,

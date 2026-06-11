@@ -46,7 +46,7 @@ fun LandingScreen(
             modifier = Modifier.padding(24.dp)
         ) {
             Text(
-                text = "📝 똑똑일기",
+                text = "👾 AI고치",
                 fontSize = 32.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color(0xFF2B6CB0),
@@ -54,7 +54,7 @@ fun LandingScreen(
             )
 
             Text(
-                text = "선생님 피드백으로 글쓰기 실력을 키워보아요!",
+                text = "AI고치와 함께 글쓰기 실력을 키워보자!",
                 fontSize = 16.sp,
                 color = Color(0xFF4A5568),
                 textAlign = TextAlign.Center,
@@ -70,7 +70,7 @@ fun LandingScreen(
                 RoleCard(
                     title = "어린이 작가",
                     icon = "👦",
-                    description = "일기를 쓰고\n선생님 도장을 받아요!",
+                    description = "일기를 쓰고\nAI고치의 도장을 받아봐!",
                     backgroundColor = Color(0xFFEDF2F7),
                     borderColor = Color(0xFF3182CE),
                     modifier = Modifier.weight(1f),

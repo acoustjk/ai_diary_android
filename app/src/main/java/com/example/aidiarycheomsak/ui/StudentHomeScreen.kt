@@ -323,7 +323,7 @@ fun StudentHomeScreen(
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         Text(
-                            text = "👩‍🏫 AI 선생님의 마법 힌트 (참고해서 고쳐 써요)",
+                            text = "👾 AI고치의 다정한 피드백 (참고해서 고쳐 써봐!)",
                             fontWeight = FontWeight.Bold,
                             color = Color(0xFFDD6B20),
                             fontSize = 15.sp
@@ -398,13 +398,13 @@ fun StudentHomeScreen(
                     ) {
                         Column(modifier = Modifier.weight(1f)) {
                             Text(
-                                text = "💡 선생님 피드백 반영해서 고쳐 쓰는 중!",
+                                text = "💡 AI고치 피드백 반영해서 고쳐 쓰는 중!",
                                 fontWeight = FontWeight.Bold,
                                 color = Color(0xFF553C9A),
                                 fontSize = 13.sp
                             )
                             Text(
-                                text = "선생님이 준 힌트를 바탕으로 고쳐 써보세요.",
+                                text = "AI고치가 준 힌트를 바탕으로 고쳐 써봐!",
                                 color = Color(0xFF553C9A),
                                 fontSize = 11.sp
                             )
@@ -573,7 +573,7 @@ fun StudentHomeScreen(
                             preferenceHelper.draftPrevExpression = 0
 
                         } catch (e: Exception) {
-                            Toast.makeText(context, "AI 선생님 연결 실패: ${e.localizedMessage}", Toast.LENGTH_LONG).show()
+                            Toast.makeText(context, "AI고치 연결 실패: ${e.localizedMessage}", Toast.LENGTH_LONG).show()
                         } finally {
                             isLoading = false
                         }
@@ -591,9 +591,9 @@ fun StudentHomeScreen(
                 if (isLoading) {
                     CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp))
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text("AI 선생님이 분석하는 중 (약 5초)...")
+                    Text("AI고치가 분석하는 중 (약 5초)...")
                 } else {
-                    Text(if (isRewriteMode) "✨ 고친 일기 다시 검사받기" else "🤖 AI 선생님께 일기 검사받기")
+                    Text(if (isRewriteMode) "✨ 고친 일기 다시 보여주기" else "👾 AI고치에게 일기 보여주기")
                 }
             }
 
@@ -602,7 +602,7 @@ fun StudentHomeScreen(
                 OutlinedButton(
                     onClick = {
                         originalContent = diaryText
-                        originalFeedback = "선생님 피드백 예시: '컴퓨터' 단어를 쓴 것은 좋으나 맞춤법에 주의해보세요. '맛있는' 어휘 외에 '꿀맛인'을 써볼까요?"
+                        originalFeedback = "피드백 예시: '컴퓨터' 단어를 쓴 것은 좋지만 맞춤법에 주의해봐! '맛있는' 대신 '꿀맛인'을 써볼까?"
                         prevSpelling = 70
                         prevExpression = 75
                         isRewriteMode = true
