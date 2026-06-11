@@ -25,6 +25,7 @@ data class DiaryReport(
     @SerialName("e2") val secondExpressionScore: Int = 0,
     @SerialName("st") val stamp: String = "",
     @SerialName("improved") val improved: Boolean = false,
+    @SerialName("wpm") val typingSpeed: Int = 0,
     @SerialName("timestamp") val timestamp: Long = System.currentTimeMillis()
 )
 
