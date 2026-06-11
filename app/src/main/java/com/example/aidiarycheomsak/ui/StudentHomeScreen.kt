@@ -144,6 +144,7 @@ fun StudentHomeScreen(
                     preferenceHelper.draftOriginalFeedback = ""
                     preferenceHelper.draftPrevSpelling = 0
                     preferenceHelper.draftPrevExpression = 0
+                    preferenceHelper.draftDiaryId = ""
                 }
             }
         }
@@ -421,6 +422,7 @@ fun StudentHomeScreen(
                             preferenceHelper.draftOriginalFeedback = ""
                             preferenceHelper.draftPrevSpelling = 0
                             preferenceHelper.draftPrevExpression = 0
+                            preferenceHelper.draftDiaryId = ""
                         }) {
                             Icon(imageVector = Icons.Default.Close, contentDescription = "취소", tint = Color(0xFF553C9A))
                         }
@@ -511,8 +513,18 @@ fun StudentHomeScreen(
                                 streak = preferenceHelper.streakCount
                             }
 
+                            // Determine the diaryId to merge 1st and 2nd writings
+                            val diaryId = if (isRewriteMode && preferenceHelper.draftDiaryId.isNotEmpty()) {
+                                preferenceHelper.draftDiaryId
+                            } else {
+                                val newId = java.util.UUID.randomUUID().toString()
+                                preferenceHelper.draftDiaryId = newId
+                                newId
+                            }
+
                             // Save this draft into parent records (to trigger "Parent Report" export)
                             val report = DiaryReport(
+                                id = diaryId,
                                 name = preferenceHelper.childName.ifBlank { "무명 어린이" },
                                 originalContent = if (isRewriteMode) originalContent else diaryText,
                                 originalFeedback = if (isRewriteMode) originalFeedback else res.feedback,
@@ -528,7 +540,6 @@ fun StudentHomeScreen(
 
                             // Save to Firebase Firestore under children/{childId}/diaries/{diaryId}
                             val db = FirebaseFirestore.getInstance()
-                            val diaryId = report.id
                             val diaryData = mapOf(
                                 "diaryId" to diaryId,
                                 "timestamp" to report.timestamp,

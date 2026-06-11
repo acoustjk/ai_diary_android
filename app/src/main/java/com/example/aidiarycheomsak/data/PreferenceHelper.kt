@@ -92,6 +92,10 @@ class PreferenceHelper(context: Context) {
         }
         set(value) = prefs.edit().putString("child_id", value).apply()
 
+    var draftDiaryId: String
+        get() = prefs.getString("draft_diary_id", "") ?: ""
+        set(value) = prefs.edit().putString("draft_diary_id", value).apply()
+
     fun getSavedReports(): List<DiaryReport> {
         val jsonStr = prefs.getString("saved_reports", null) ?: return emptyList()
         return try {
