@@ -74,7 +74,7 @@ fun StudentHomeScreen(
     var prevExpression by rememberSaveable { mutableIntStateOf(0) }
 
     var pairedReviewersList by remember { mutableStateOf<List<Map<String, String>>>(emptyList()) }
-    var credits by remember { mutableIntStateOf(3) }
+    var credits by remember { mutableIntStateOf(0) }
     var showNoCreditDialog by remember { mutableStateOf(false) }
 
     // Listen to child profile document to fetch connected reviewers & credits in real-time
@@ -91,20 +91,20 @@ fun StudentHomeScreen(
                         credits = serverCredits.toInt()
                     } else {
                         // Document exists but no credits field, initialize it
-                        docRef.update("credits", 3, "totalCreditsGranted", 3)
-                        credits = 3
+                        docRef.update("credits", 0, "totalCreditsGranted", 0)
+                        credits = 0
                     }
                 } else {
-                    // Document does not exist yet. Initialize it with 3 credits!
+                    // Document does not exist yet. Initialize it with 0 credits!
                     val initialData = mapOf(
                         "childId" to preferenceHelper.childId,
                         "childName" to preferenceHelper.childName.ifBlank { "무명 어린이" },
-                        "credits" to 3,
-                        "totalCreditsGranted" to 3,
+                        "credits" to 0,
+                        "totalCreditsGranted" to 0,
                         "pairedReviewers" to emptyList<Map<String, String>>()
                     )
                     docRef.set(initialData)
-                    credits = 3
+                    credits = 0
                 }
             }
         }
