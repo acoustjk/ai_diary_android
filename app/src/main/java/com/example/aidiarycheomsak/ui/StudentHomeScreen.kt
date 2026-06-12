@@ -25,6 +25,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.text.style.TextAlign
 import com.example.aidiarycheomsak.data.DiaryReport
 import com.example.aidiarycheomsak.data.GeminiService
 import com.example.aidiarycheomsak.data.PreferenceHelper
@@ -47,6 +48,11 @@ fun StudentHomeScreen(
     val context = LocalContext.current
     val preferenceHelper = remember { PreferenceHelper(context) }
     val scope = rememberCoroutineScope()
+
+    val scanner = remember { com.google.mlkit.vision.codescanner.GmsBarcodeScanning.getClient(context) }
+    var isScanning by remember { mutableStateOf(false) }
+    var showApprovedDialog by remember { mutableStateOf(false) }
+    var scannedSessionId by remember { mutableStateOf("") }
 
     // State variables
     var diaryText by rememberSaveable { mutableStateOf("") }
@@ -196,17 +202,166 @@ fun StudentHomeScreen(
         },
         modifier = modifier
     ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color(0xFFF0F4F8))
-                .padding(innerPadding)
-                .padding(16.dp)
-                .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            // 👦 어린이 작가 이름 카드
-            Card(
+        if (pairedReviewersList.isEmpty() && credits == 0) {
+            var homePairingCode by remember { mutableStateOf("") }
+            var isGeneratingHomeCode by remember { mutableStateOf(false) }
+
+            LaunchedEffect(preferenceHelper.childId) {
+                val docRef = FirebaseFirestore.getInstance().collection("children").document(preferenceHelper.childId)
+                docRef.get().addOnSuccessListener { snapshot ->
+                    if (snapshot.exists()) {
+                        val code = snapshot.getString("pairingCode") ?: ""
+                        val expires = snapshot.getLong("pairingCodeExpires") ?: 0L
+                        if (code.isNotEmpty() && expires > System.currentTimeMillis() / 1000) {
+                            homePairingCode = code
+                        }
+                    }
+                }
+            }
+
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color(0xFFF0F4F8))
+                    .padding(innerPadding)
+                    .padding(24.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Card(
+                    shape = RoundedCornerShape(16.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color.White),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Column(
+                        modifier = Modifier.padding(24.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = "🔗 보호자(부모님) 연결 필요",
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFF2D3748)
+                        )
+
+                        Text(
+                            text = "AI고치 일기장을 사용하려면 부모님 기기와의 연결이 필요합니다.\n\n먼저 아래에 어린이의 이름을 적고 연결 코드를 발급받아 부모님 앱에 등록해 주세요! 🎁",
+                            fontSize = 13.sp,
+                            color = Color(0xFF718096),
+                            textAlign = TextAlign.Center,
+                            lineHeight = 20.sp
+                        )
+
+                        var childNameInput by remember { mutableStateOf(preferenceHelper.childName) }
+                        var lastSyncedPairingName by remember { mutableStateOf(preferenceHelper.childName) }
+
+                        LaunchedEffect(childNameInput) {
+                            if (childNameInput.isNotBlank() && childNameInput != lastSyncedPairingName) {
+                                kotlinx.coroutines.delay(1000) // Debounce for 1 second
+                                if (childNameInput != lastSyncedPairingName) {
+                                    com.google.firebase.firestore.FirebaseFirestore.getInstance()
+                                        .collection("children")
+                                        .document(preferenceHelper.childId)
+                                        .update("childName", childNameInput)
+                                        .addOnSuccessListener {
+                                            lastSyncedPairingName = childNameInput
+                                        }
+                                }
+                            }
+                        }
+
+                        OutlinedTextField(
+                            value = childNameInput,
+                            onValueChange = {
+                                childNameInput = it
+                                preferenceHelper.childName = it
+                            },
+                            placeholder = { Text("이름을 입력해 주세요") },
+                            label = { Text("어린이 이름") },
+                            singleLine = true,
+                            textStyle = TextStyle(color = Color.Black),
+                            modifier = Modifier.fillMaxWidth()
+                        )
+
+                        if (homePairingCode.isNotEmpty()) {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .background(Color(0xFFEDF2F7), RoundedCornerShape(8.dp))
+                                    .padding(16.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(4.dp)
+                            ) {
+                                Text("인증 연결 코드 (10분간 유효)", fontSize = 11.sp, color = Color(0xFF718096))
+                                Text(
+                                    text = "${homePairingCode.substring(0, 3)} ${homePairingCode.substring(3, 6)}",
+                                    fontSize = 32.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color(0xFF2B6CB0),
+                                    letterSpacing = 2.sp
+                                )
+                            }
+                        }
+
+                        Button(
+                            onClick = {
+                                val cleanName = childNameInput.trim()
+                                if (cleanName.isEmpty()) {
+                                    Toast.makeText(context, "이름을 먼저 입력해 주세요!", Toast.LENGTH_SHORT).show()
+                                    return@Button
+                                }
+                                isGeneratingHomeCode = true
+                                val newCode = (100000..999999).random().toString()
+                                val childData = mapOf(
+                                    "childId" to preferenceHelper.childId,
+                                    "childName" to cleanName,
+                                    "pairingCode" to newCode,
+                                    "pairingCodeExpires" to (System.currentTimeMillis() / 1000 + 600) // 10 minutes
+                                )
+
+                                FirebaseFirestore.getInstance()
+                                    .collection("children")
+                                    .document(preferenceHelper.childId)
+                                    .set(childData, SetOptions.merge())
+                                    .addOnSuccessListener {
+                                        homePairingCode = newCode
+                                        isGeneratingHomeCode = false
+                                        Toast.makeText(context, "페어링 코드가 발급되었습니다! 10분간 유효합니다.", Toast.LENGTH_SHORT).show()
+                                    }
+                                    .addOnFailureListener { e ->
+                                        isGeneratingHomeCode = false
+                                        Toast.makeText(context, "코드 발급 실패: ${e.localizedMessage}", Toast.LENGTH_LONG).show()
+                                    }
+                            },
+                            enabled = !isGeneratingHomeCode,
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF48BB78)),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            if (isGeneratingHomeCode) {
+                                CircularProgressIndicator(color = Color.White, modifier = Modifier.size(20.dp))
+                            } else {
+                                Text(
+                                    text = if (homePairingCode.isEmpty()) "연결 코드 발급받기" else "새로운 연결 코드 재발급",
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color(0xFFF0F4F8))
+                    .padding(innerPadding)
+                    .padding(16.dp)
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                // 👦 어린이 작가 이름 카드
+                Card(
                 shape = RoundedCornerShape(12.dp),
                 colors = CardDefaults.cardColors(containerColor = Color.White),
                 elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
@@ -224,9 +379,27 @@ fun StudentHomeScreen(
                         color = Color(0xFF2D3748)
                     )
                     var nameInput by remember { mutableStateOf(preferenceHelper.childName) }
+                    var lastSyncedDashboardName by remember { mutableStateOf(preferenceHelper.childName) }
                     
                     LaunchedEffect(preferenceHelper.childName) {
-                        nameInput = preferenceHelper.childName
+                        if (nameInput != preferenceHelper.childName) {
+                            nameInput = preferenceHelper.childName
+                        }
+                    }
+
+                    LaunchedEffect(nameInput) {
+                        if (nameInput.isNotBlank() && nameInput != lastSyncedDashboardName) {
+                            kotlinx.coroutines.delay(1000) // Debounce for 1 second
+                            if (nameInput != lastSyncedDashboardName) {
+                                com.google.firebase.firestore.FirebaseFirestore.getInstance()
+                                    .collection("children")
+                                    .document(preferenceHelper.childId)
+                                    .update("childName", nameInput)
+                                    .addOnSuccessListener {
+                                        lastSyncedDashboardName = nameInput
+                                    }
+                            }
+                        }
                     }
 
                     OutlinedTextField(
@@ -667,6 +840,46 @@ fun StudentHomeScreen(
                 }
             }
 
+            // 💻 컴퓨터로 일기쓰기 (웹 화면 연동) 버튼 추가
+            Spacer(modifier = Modifier.height(12.dp))
+            OutlinedButton(
+                onClick = {
+                    if (preferenceHelper.childId.isBlank()) {
+                        Toast.makeText(context, "자녀 정보가 올바르지 않습니다.", Toast.LENGTH_SHORT).show()
+                        return@OutlinedButton
+                    }
+                    isScanning = true
+                    scanner.startScan()
+                        .addOnSuccessListener { barcode ->
+                            val rawValue = barcode.rawValue ?: ""
+                            if (rawValue.startsWith("session_")) {
+                                scannedSessionId = rawValue
+                                showApprovedDialog = true
+                            } else {
+                                Toast.makeText(context, "올바르지 않은 QR 코드입니다.", Toast.LENGTH_SHORT).show()
+                            }
+                            isScanning = false
+                        }
+                        .addOnFailureListener { e ->
+                            Toast.makeText(context, "스캔 실패: ${e.localizedMessage}", Toast.LENGTH_SHORT).show()
+                            isScanning = false
+                        }
+                },
+                enabled = !isScanning && !isLoading,
+                border = BorderStroke(1.5.dp, Color(0xFF3182CE)),
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = Color(0xFF3182CE)),
+                shape = RoundedCornerShape(8.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(52.dp)
+            ) {
+                if (isScanning) {
+                    CircularProgressIndicator(color = Color(0xFF3182CE), modifier = Modifier.size(24.dp))
+                } else {
+                    Text("💻 컴퓨터로 일기쓰기 (웹 화면 연동)", fontWeight = FontWeight.Bold)
+                }
+            }
+
             // Test Toggle for Rewrite Mode (Since we are testing, this lets the user simulate receiving feedback and rewriting)
             if (diaryText.length > 5 && !isRewriteMode) {
                 OutlinedButton(
@@ -692,6 +905,7 @@ fun StudentHomeScreen(
             }
         }
     }
+}
 
     if (showNoCreditDialog) {
         AlertDialog(
@@ -709,6 +923,7 @@ fun StudentHomeScreen(
                         showNoCreditDialog = false
                         scope.launch {
                             try {
+                                val serverUrl = preferenceHelper.serverUrl
                                 val success = GeminiService.requestCredits(
                                     serverUrl = serverUrl,
                                     childId = preferenceHelper.childId,
@@ -726,6 +941,41 @@ fun StudentHomeScreen(
                     }
                 ) {
                     Text("부모님께 충전 요청하기", color = Color(0xFFE53E3E), fontWeight = FontWeight.Bold)
+                }
+            }
+        )
+    }
+
+    if (showApprovedDialog) {
+        AlertDialog(
+            onDismissRequest = { showApprovedDialog = false },
+            title = { Text("💻 컴퓨터 로그인 승인", fontWeight = FontWeight.Bold, color = Color.Black) },
+            text = { Text("컴퓨터(웹 화면)에서 이 어린이 계정으로 로그인하시겠습니까?\n\n이름: ${preferenceHelper.childName.ifBlank { "무명 어린이" }}", color = Color.DarkGray) },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        showApprovedDialog = false
+                        val db = FirebaseFirestore.getInstance()
+                        db.collection("webSessions").document(scannedSessionId)
+                            .update(mapOf(
+                                "status" to "approved",
+                                "childId" to preferenceHelper.childId,
+                                "childName" to preferenceHelper.childName.ifBlank { "무명 어린이" }
+                            ))
+                            .addOnSuccessListener {
+                                Toast.makeText(context, "컴퓨터 로그인이 승인되었습니다! 🎉", Toast.LENGTH_SHORT).show()
+                            }
+                            .addOnFailureListener { e ->
+                                Toast.makeText(context, "승인 처리 실패: ${e.localizedMessage}", Toast.LENGTH_LONG).show()
+                            }
+                    }
+                ) {
+                    Text("승인하기")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showApprovedDialog = false }) {
+                    Text("취소")
                 }
             }
         )
