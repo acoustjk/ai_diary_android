@@ -119,4 +119,16 @@ class PreferenceHelper(context: Context) {
         val jsonStr = json.encodeToString(current)
         prefs.edit().putString("saved_reports", jsonStr).apply()
     }
+
+    var pairedChildIds: Set<String>
+        get() = prefs.getString("paired_child_ids", "")?.split(",")?.filter { it.isNotEmpty() }?.toSet() ?: emptySet()
+        set(value) = prefs.edit().putString("paired_child_ids", value.joinToString(",")).apply()
+
+    fun getChildRole(childId: String): String {
+        return prefs.getString("child_role_$childId", "sub") ?: "sub"
+    }
+
+    fun setChildRole(childId: String, role: String) {
+        prefs.edit().putString("child_role_$childId", role).apply()
+    }
 }

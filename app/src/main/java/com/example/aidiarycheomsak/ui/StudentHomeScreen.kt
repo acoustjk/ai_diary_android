@@ -754,41 +754,43 @@ fun StudentHomeScreen(
                                 newId
                             }
 
-                            // Save this draft into parent records (to trigger "Parent Report" export)
-                            val report = DiaryReport(
-                                id = diaryId,
-                                name = preferenceHelper.childName.ifBlank { "무명 어린이" },
-                                originalContent = if (isRewriteMode) originalContent else diaryText,
-                                originalFeedback = if (isRewriteMode) originalFeedback else res.feedback,
-                                rewrittenContent = if (isRewriteMode) diaryText else "",
-                                firstSpellingScore = if (isRewriteMode) prevSpelling else finalSpelling,
-                                firstExpressionScore = if (isRewriteMode) prevExpression else finalExpression,
-                                secondSpellingScore = if (isRewriteMode) finalSpelling else 0,
-                                secondExpressionScore = if (isRewriteMode) finalExpression else 0,
-                                stamp = res.stamp,
-                                improved = res.improved
-                            )
-                            preferenceHelper.saveReport(report)
+                            // Save to Firestore and Local Prefs ONLY when rewrite is completed (2nd draft)
+                            if (isRewriteMode) {
+                                val report = DiaryReport(
+                                    id = diaryId,
+                                    name = preferenceHelper.childName.ifBlank { "무명 어린이" },
+                                    originalContent = originalContent,
+                                    originalFeedback = originalFeedback,
+                                    rewrittenContent = diaryText,
+                                    firstSpellingScore = prevSpelling,
+                                    firstExpressionScore = prevExpression,
+                                    secondSpellingScore = finalSpelling,
+                                    secondExpressionScore = finalExpression,
+                                    stamp = res.stamp,
+                                    improved = res.improved
+                                )
+                                preferenceHelper.saveReport(report)
 
-                            // Save to Firebase Firestore under children/{childId}/diaries/{diaryId}
-                            val db = FirebaseFirestore.getInstance()
-                            val diaryData = mapOf(
-                                "diaryId" to diaryId,
-                                "timestamp" to report.timestamp,
-                                "name" to report.name,
-                                "originalContent" to report.originalContent,
-                                "originalFeedback" to report.originalFeedback,
-                                "rewrittenContent" to report.rewrittenContent,
-                                "firstSpellingScore" to report.firstSpellingScore,
-                                "firstExpressionScore" to report.firstExpressionScore,
-                                "secondSpellingScore" to report.secondSpellingScore,
-                                "secondExpressionScore" to report.secondExpressionScore,
-                                "stamp" to report.stamp,
-                                "improved" to report.improved
-                            )
-                            db.collection("children").document(preferenceHelper.childId)
-                                .collection("diaries").document(diaryId)
-                                .set(diaryData, SetOptions.merge())
+                                // Save to Firebase Firestore under children/{childId}/diaries/{diaryId}
+                                val db = FirebaseFirestore.getInstance()
+                                val diaryData = mapOf(
+                                    "diaryId" to diaryId,
+                                    "timestamp" to report.timestamp,
+                                    "name" to report.name,
+                                    "originalContent" to report.originalContent,
+                                    "originalFeedback" to report.originalFeedback,
+                                    "rewrittenContent" to report.rewrittenContent,
+                                    "firstSpellingScore" to report.firstSpellingScore,
+                                    "firstExpressionScore" to report.firstExpressionScore,
+                                    "secondSpellingScore" to report.secondSpellingScore,
+                                    "secondExpressionScore" to report.secondExpressionScore,
+                                    "stamp" to report.stamp,
+                                    "improved" to report.improved
+                                )
+                                db.collection("children").document(preferenceHelper.childId)
+                                    .collection("diaries").document(diaryId)
+                                    .set(diaryData, SetOptions.merge())
+                            }
 
                             onNavigateToResult(
                                 if (isRewriteMode) originalContent else diaryText,

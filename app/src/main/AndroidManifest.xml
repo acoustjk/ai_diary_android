@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
         android:allowBackup="true"
@@ -12,6 +13,11 @@
         android:windowSoftInputMode="adjustResize"
         android:usesCleartextTraffic="true"
         android:theme="@style/Theme.AiDiaryCheomsak">
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="diary_notification_channel" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true">

@@ -92,6 +92,7 @@ dependencies {
   implementation(platform(libs.firebase.bom))
   implementation(libs.firebase.auth)
   implementation(libs.firebase.firestore)
+  implementation(libs.firebase.messaging)
 
   // Google Play Services Code Scanner
   implementation("com.google.android.gms:play-services-code-scanner:16.1.0")
