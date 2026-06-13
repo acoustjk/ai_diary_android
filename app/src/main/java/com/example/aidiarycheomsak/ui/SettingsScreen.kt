@@ -1,6 +1,9 @@
 package com.example.aidiarycheomsak.ui
 
 import android.widget.Toast
+import android.content.Intent
+import android.net.Uri
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -212,6 +215,72 @@ fun SettingsScreen(
                             }
                         }
                     }
+                }
+            }
+
+            Card(
+                shape = RoundedCornerShape(12.dp),
+                colors = CardDefaults.cardColors(containerColor = Color.White),
+                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Text(
+                        text = "📄 약관 및 라이선스",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF2D3748)
+                    )
+
+                    HorizontalDivider(color = Color(0xFFE2E8F0))
+
+                    Text(
+                        text = "이용약관",
+                        color = Color(0xFF3182CE),
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 14.sp,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                val serverUrl = preferenceHelper.serverUrl.ifBlank { "https://ai-diary-cheomsak.onrender.com" }
+                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("${serverUrl.trim().removeSuffix("/")}/terms"))
+                                context.startActivity(intent)
+                            }
+                            .padding(vertical = 8.dp)
+                    )
+
+                    Text(
+                        text = "개인정보 처리방침",
+                        color = Color(0xFF3182CE),
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 14.sp,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                val serverUrl = preferenceHelper.serverUrl.ifBlank { "https://ai-diary-cheomsak.onrender.com" }
+                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("${serverUrl.trim().removeSuffix("/")}/privacy"))
+                                context.startActivity(intent)
+                            }
+                            .padding(vertical = 8.dp)
+                    )
+
+                    Text(
+                        text = "오픈소스 라이선스 고지",
+                        color = Color(0xFF3182CE),
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 14.sp,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                val serverUrl = preferenceHelper.serverUrl.ifBlank { "https://ai-diary-cheomsak.onrender.com" }
+                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("${serverUrl.trim().removeSuffix("/")}/licenses"))
+                                context.startActivity(intent)
+                            }
+                            .padding(vertical = 8.dp)
+                    )
                 }
             }
         }
