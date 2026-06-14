@@ -54,7 +54,7 @@ class MainActivity : ComponentActivity() {
   private fun createNotificationChannel() {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
       val name = "일기 성장 보고서"
-      val descriptionText = "자녀의 일기 작성 완료 및 크레딧 상태 알림을 수신합니다."
+      val descriptionText = "자녀의 일기 작성 완료 및 마법이슬 상태 알림을 수신합니다."
       val importance = NotificationManager.IMPORTANCE_HIGH
       val channel = NotificationChannel("diary_notification_channel", name, importance).apply {
         description = descriptionText

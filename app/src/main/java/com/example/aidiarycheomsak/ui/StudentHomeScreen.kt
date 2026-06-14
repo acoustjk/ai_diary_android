@@ -420,7 +420,7 @@ fun StudentHomeScreen(
                 }
             }
 
-            // 🪙 남은 크레딧 카드
+            // 🪙 남은 마법이슬 카드
             Card(
                 shape = RoundedCornerShape(12.dp),
                 colors = CardDefaults.cardColors(containerColor = Color(0xFFFFFDF5)),
@@ -436,13 +436,13 @@ fun StudentHomeScreen(
                     Text(text = "🪙", fontSize = 24.sp)
                     Column {
                         Text(
-                            text = "남은 크레딧: ${credits}개",
+                            text = "남은 마법이슬: ${credits}개",
                             fontWeight = FontWeight.Bold,
                             fontSize = 15.sp,
                             color = Color(0xFFB7791F)
                         )
                         Text(
-                            text = "일기 1회 분석 시작 시 1 크레딧이 차감됩니다.",
+                            text = "일기 1회 분석 시작 시 마법이슬 1개가 차감됩니다.",
                             fontSize = 12.sp,
                             color = Color(0xFF744210)
                         )
@@ -912,8 +912,8 @@ fun StudentHomeScreen(
     if (showNoCreditDialog) {
         AlertDialog(
             onDismissRequest = { showNoCreditDialog = false },
-            title = { Text("🪙 크레딧 부족", fontWeight = FontWeight.Bold, color = Color.Black) },
-            text = { Text("무료 크레딧을 모두 사용했어요!\n부모님 스마트폰 앱에서 크레딧을 충전해 달라고 말씀드려 보세요. 😊", color = Color.DarkGray) },
+            title = { Text("🪙 마법이슬 부족", fontWeight = FontWeight.Bold, color = Color.Black) },
+            text = { Text("무료 마법이슬을 모두 사용했어요!\n부모님 스마트폰 앱에서 마법이슬을 충전해 달라고 말씀드려 보세요. 😊", color = Color.DarkGray) },
             confirmButton = {
                 Button(onClick = { showNoCreditDialog = false }) {
                     Text("확인")
@@ -932,7 +932,7 @@ fun StudentHomeScreen(
                                     childName = preferenceHelper.childName
                                 )
                                 if (success) {
-                                    Toast.makeText(context, "부모님께 크레딧 충전 요청을 보냈어요! 💌", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(context, "부모님께 마법이슬 충전 요청을 보냈어요! 💌", Toast.LENGTH_SHORT).show()
                                 } else {
                                     Toast.makeText(context, "충전 요청 전송에 실패했어요. 😢", Toast.LENGTH_SHORT).show()
                                 }

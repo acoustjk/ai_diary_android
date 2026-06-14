@@ -226,7 +226,7 @@ fun ParentHomeScreen(
                                         }
                                     }
                                     Spacer(modifier = Modifier.height(4.dp))
-                                    Text(text = "남은 크레딧: ${creditsVal}개", fontSize = 12.sp, color = Color(0xFF718096))
+                                    Text(text = "남은 마법이슬: ${creditsVal}개", fontSize = 12.sp, color = Color(0xFF718096))
                                 }
                                 
                                 if (myRole == "main") {
@@ -235,13 +235,13 @@ fun ParentHomeScreen(
                                             FirebaseFirestore.getInstance().collection("children").document(childId)
                                                 .update("credits", creditsVal + 10)
                                                 .addOnSuccessListener {
-                                                    Toast.makeText(context, "${childName}\uc774\uc758\u0020\ud06c\ub808\ub5a7\uc774\u0020\u0031\u0030\uac1c\u0020\ucd1d\uc804\ub41c\uc5c8\uc2b5\ub2c8\ub2e4\u002e\u0020\ud83e\ude99", Toast.LENGTH_SHORT).show()
+                                                    Toast.makeText(context, "${childName}의 마법이슬이 10개 충전되었습니다! 🪙", Toast.LENGTH_SHORT).show()
                                                 }
                                         },
                                         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFB7791F)),
                                         contentPadding = PaddingValues(horizontal = 10.dp, vertical = 4.dp)
                                     ) {
-                                        Text("\ud83e\ude99\u0020\ucd94\uac00\u0020\ud06c\ub808\ub5a7", fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                                        Text("🪙 추가 마법이슬", fontSize = 11.sp, fontWeight = FontWeight.Bold)
                                     }
                                 } else {
                                     Text(
