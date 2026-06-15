@@ -66,7 +66,7 @@ fun SettingsScreen(
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            // 🔗 부모님/교사 기기 연결 설정 카드
+            // 🔗 보호자/교사 기기 연결 설정 카드
             var pairingCode by remember { mutableStateOf("") }
             var isGeneratingCode by remember { mutableStateOf(false) }
             var pairedReviewersList by remember { mutableStateOf<List<Map<String, String>>>(emptyList()) }
@@ -96,14 +96,14 @@ fun SettingsScreen(
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     Text(
-                        text = "🔗 부모님/교사 연결 (페어링)",
+                        text = "🔗 보호자/교사 연결 (페어링)",
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF2D3748)
                     )
 
                     Text(
-                        text = "아래에서 생성한 6자리 인증 코드를 부모님 또는 선생님의 스마트폰 앱에 입력하여 일기 첨삭 내용을 함께 볼 수 있습니다. (다대다 연결 지원)",
+                        text = "아래에서 생성한 6자리 인증 코드를 보호자 또는 선생님의 스마트폰 앱에 입력하여 일기 첨삭 내용을 함께 볼 수 있습니다. (다대다 연결 지원)",
                         fontSize = 12.sp,
                         color = Color(0xFF718096),
                         lineHeight = 18.sp
@@ -180,7 +180,7 @@ fun SettingsScreen(
 
                     if (pairedReviewersList.isEmpty()) {
                         Text(
-                            text = "아직 연결된 보호자가 없습니다. 페어링 코드를 부모님께 공유해 주세요.",
+                            text = "아직 연결된 보호자가 없습니다. 페어링 코드를 보호자님께 공유해 주세요.",
                             fontSize = 12.sp,
                             color = Color(0xFF718096)
                         )

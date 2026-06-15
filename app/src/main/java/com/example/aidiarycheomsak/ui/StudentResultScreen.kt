@@ -289,16 +289,16 @@ fun StudentResultScreen(
                                 Text("⚠️", fontSize = 24.sp)
                                 Column {
                                     Text(
-                                        text = "부모님 앱과 연결되어 있지 않습니다",
+                                        text = "보호자 앱과 연결되어 있지 않습니다",
                                         fontWeight = FontWeight.Bold,
                                         fontSize = 14.sp,
                                         color = Color(0xFFC53030)
                                     )
                                     Text(
                                         text = if (rewrittenContent.isEmpty()) {
-                                            "AI고치의 힌트를 보고 일기를 고쳐 쓰더라도 부모님이 보실 수 없어. 먼저 기기 연결(페어링)을 진행해줘!"
+                                            "AI고치의 힌트를 보고 일기를 고쳐 쓰더라도 보호자가 보실 수 없어. 먼저 기기 연결(페어링)을 진행해줘!"
                                         } else {
-                                            "일기는 저장되었으나, 부모님이 실시간으로 보시려면 기기 연결(페어링)이 필요합니다."
+                                            "일기는 저장되었으나, 보호자가 실시간으로 보시려면 기기 연결(페어링)이 필요합니다."
                                         },
                                         fontSize = 12.sp,
                                         color = Color(0xFF9B2C2C),
@@ -334,7 +334,7 @@ fun StudentResultScreen(
                                 Column {
                                     val names = pairedReviewersList.map { it["name"] ?: "보호자" }.joinToString(", ")
                                     Text(
-                                        text = "부모님 앱과 연결되어 있습니다",
+                                        text = "보호자 앱과 연결되어 있습니다",
                                         fontWeight = FontWeight.Bold,
                                         fontSize = 14.sp,
                                         color = Color(0xFF15803D)
@@ -365,7 +365,7 @@ fun StudentResultScreen(
                                 Column {
                                     val names = pairedReviewersList.map { it["name"] ?: "보호자" }.joinToString(", ")
                                     Text(
-                                        text = "부모님 앱으로 보고서 전송 완료!",
+                                        text = "보호자 앱으로 보고서 전송 완료!",
                                         fontWeight = FontWeight.Bold,
                                         fontSize = 14.sp,
                                         color = Color(0xFF15803D)

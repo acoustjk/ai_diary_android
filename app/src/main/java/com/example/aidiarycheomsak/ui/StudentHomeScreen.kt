@@ -239,14 +239,14 @@ fun StudentHomeScreen(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = "🔗 보호자(부모님) 연결 필요",
+                            text = "🔗 보호자 연결 필요",
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,
                             color = Color(0xFF2D3748)
                         )
 
                         Text(
-                            text = "AI고치 일기장을 사용하려면 부모님 기기와의 연결이 필요합니다.\n\n먼저 아래에 어린이의 이름을 적고 연결 코드를 발급받아 부모님 앱에 등록해 주세요! 🎁",
+                            text = "AI고치 일기장을 사용하려면 보호자 기기와의 연결이 필요합니다.\n\n먼저 아래에 어린이의 이름을 적고 연결 코드를 발급받아 보호자 앱에 등록해 주세요! 🎁",
                             fontSize = 13.sp,
                             color = Color(0xFF718096),
                             textAlign = TextAlign.Center,
@@ -450,7 +450,7 @@ fun StudentHomeScreen(
                 }
             }
 
-            // 🔗 부모님 연결 상태 카드
+            // 🔗 보호자 연결 상태 카드
             Card(
                 shape = RoundedCornerShape(12.dp),
                 colors = CardDefaults.cardColors(
@@ -474,7 +474,7 @@ fun StudentHomeScreen(
                         Text(text = "⚠️", fontSize = 20.sp)
                         Column {
                             Text(
-                                text = "부모님 앱과 연결되어 있지 않아요",
+                                text = "보호자 앱과 연결되어 있지 않아요",
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 14.sp,
                                 color = Color(0xFFC53030)
@@ -490,7 +490,7 @@ fun StudentHomeScreen(
                         Column {
                             val names = pairedReviewersList.map { it["name"] ?: "보호자" }.joinToString(", ")
                             Text(
-                                text = "부모님 앱과 연결되었습니다",
+                                text = "보호자 앱과 연결되었습니다",
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 14.sp,
                                 color = Color(0xFF15803D)
@@ -913,7 +913,7 @@ fun StudentHomeScreen(
         AlertDialog(
             onDismissRequest = { showNoCreditDialog = false },
             title = { Text("🪙 마법이슬 부족", fontWeight = FontWeight.Bold, color = Color.Black) },
-            text = { Text("무료 마법이슬을 모두 사용했어요!\n부모님 스마트폰 앱에서 마법이슬을 충전해 달라고 말씀드려 보세요. 😊", color = Color.DarkGray) },
+            text = { Text("무료 마법이슬을 모두 사용했어요!\n보호자 스마트폰 앱에서 마법이슬을 충전해 달라고 말씀드려 보세요. 😊", color = Color.DarkGray) },
             confirmButton = {
                 Button(onClick = { showNoCreditDialog = false }) {
                     Text("확인")
@@ -932,7 +932,7 @@ fun StudentHomeScreen(
                                     childName = preferenceHelper.childName
                                 )
                                 if (success) {
-                                    Toast.makeText(context, "부모님께 마법이슬 충전 요청을 보냈어요! 💌", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(context, "보호자님께 마법이슬 충전 요청을 보냈어요! 💌", Toast.LENGTH_SHORT).show()
                                 } else {
                                     Toast.makeText(context, "충전 요청 전송에 실패했어요. 😢", Toast.LENGTH_SHORT).show()
                                 }
@@ -942,7 +942,7 @@ fun StudentHomeScreen(
                         }
                     }
                 ) {
-                    Text("부모님께 충전 요청하기", color = Color(0xFFE53E3E), fontWeight = FontWeight.Bold)
+                    Text("보호자님께 충전 요청하기", color = Color(0xFFE53E3E), fontWeight = FontWeight.Bold)
                 }
             }
         )
