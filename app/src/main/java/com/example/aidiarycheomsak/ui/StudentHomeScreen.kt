@@ -767,7 +767,9 @@ fun StudentHomeScreen(
                                     secondSpellingScore = finalSpelling,
                                     secondExpressionScore = finalExpression,
                                     stamp = res.stamp,
-                                    improved = res.improved
+                                    improved = res.improved,
+                                    originalLength = originalContent.length,
+                                    rewrittenLength = diaryText.length
                                 )
                                 preferenceHelper.saveReport(report)
 
@@ -785,7 +787,9 @@ fun StudentHomeScreen(
                                     "secondSpellingScore" to report.secondSpellingScore,
                                     "secondExpressionScore" to report.secondExpressionScore,
                                     "stamp" to report.stamp,
-                                    "improved" to report.improved
+                                    "improved" to report.improved,
+                                    "originalLength" to report.originalLength,
+                                    "rewrittenLength" to report.rewrittenLength
                                 )
                                 db.collection("children").document(preferenceHelper.childId)
                                     .collection("diaries").document(diaryId)

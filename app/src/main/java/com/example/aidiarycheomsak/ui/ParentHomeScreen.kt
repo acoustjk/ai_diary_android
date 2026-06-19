@@ -102,6 +102,8 @@ fun ParentHomeScreen(
                                 val stamp = doc.getString("stamp") ?: ""
                                 val improved = doc.getBoolean("improved") ?: false
                                 val typingSpeed = doc.getLong("wpm")?.toInt() ?: 0
+                                val originalLength = doc.getLong("originalLength")?.toInt() ?: 0
+                                val rewrittenLength = doc.getLong("rewrittenLength")?.toInt() ?: 0
 
                                 val report = DiaryReport(
                                     id = id,
@@ -116,7 +118,9 @@ fun ParentHomeScreen(
                                     secondExpressionScore = secondExpression,
                                     stamp = stamp,
                                     improved = improved,
-                                    typingSpeed = typingSpeed
+                                    typingSpeed = typingSpeed,
+                                    originalLength = originalLength,
+                                    rewrittenLength = rewrittenLength
                                 )
                                 preferenceHelper.saveReport(report)
                             } catch (ex: Exception) {

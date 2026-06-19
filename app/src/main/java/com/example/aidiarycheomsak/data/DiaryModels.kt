@@ -26,6 +26,14 @@ data class DiaryReport(
     @SerialName("st") val stamp: String = "",
     @SerialName("improved") val improved: Boolean = false,
     @SerialName("wpm") val typingSpeed: Int = 0,
-    @SerialName("timestamp") val timestamp: Long = System.currentTimeMillis()
-)
+    @SerialName("timestamp") val timestamp: Long = System.currentTimeMillis(),
+    @SerialName("originalLength") val originalLength: Int = 0,
+    @SerialName("rewrittenLength") val rewrittenLength: Int = 0
+) {
+    val displayOriginalLength: Int
+        get() = if (originalLength > 0) originalLength else originalContent.length
+
+    val displayRewrittenLength: Int
+        get() = if (rewrittenLength > 0) rewrittenLength else rewrittenContent.length
+}
 

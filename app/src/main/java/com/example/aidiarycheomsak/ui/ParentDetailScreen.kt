@@ -105,7 +105,8 @@ fun ParentDetailScreen(
                     ScoreChangeItem(
                         title = "✨ 맞춤법 점수",
                         before = report.firstSpellingScore,
-                        after = report.secondSpellingScore
+                        after = report.secondSpellingScore,
+                        suffix = "점"
                     )
                     Divider(
                         modifier = Modifier
@@ -116,7 +117,20 @@ fun ParentDetailScreen(
                     ScoreChangeItem(
                         title = "💡 표현력 점수",
                         before = report.firstExpressionScore,
-                        after = report.secondExpressionScore
+                        after = report.secondExpressionScore,
+                        suffix = "점"
+                    )
+                    Divider(
+                        modifier = Modifier
+                            .height(40.dp)
+                            .width(1.dp),
+                        color = Color(0xFFBEE3F8)
+                    )
+                    ScoreChangeItem(
+                        title = "📝 글자 수",
+                        before = report.displayOriginalLength,
+                        after = report.displayRewrittenLength,
+                        suffix = "자"
                     )
                     if (report.typingSpeed > 0) {
                         Divider(
@@ -282,7 +296,8 @@ fun ParentDetailScreen(
 fun ScoreChangeItem(
     title: String,
     before: Int,
-    after: Int
+    after: Int,
+    suffix: String = ""
 ) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
@@ -292,10 +307,15 @@ fun ScoreChangeItem(
             color = Color(0xFF3182CE)
         )
         Spacer(modifier = Modifier.height(4.dp))
-        val diff = after - before
-        val diffText = if (diff > 0) " (+${diff}) 🎉" else if (diff < 0) " (${diff})" else " (동일)"
+        val displayText = if (after == 0) {
+            "$before$suffix"
+        } else {
+            val diff = after - before
+            val diffText = if (diff > 0) " (+${diff}) 🎉" else if (diff < 0) " (${diff})" else " (동일)"
+            "$before$suffix ➡️ $after$suffix$diffText"
+        }
         Text(
-            text = "$before ➡️ $after$diffText",
+            text = displayText,
             fontSize = 15.sp,
             fontWeight = FontWeight.Bold,
             color = Color(0xFF2D3748)
