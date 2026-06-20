@@ -61,21 +61,34 @@ fun ParentDetailScreen(
             )
         },
         bottomBar = {
-            // Mock AdMob Banner for Parents
-            Box(
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(60.dp)
-                    .background(Color(0xFFE2E8F0))
-                    .padding(8.dp),
-                contentAlignment = Alignment.Center
+                    .background(Color(0xFFF7FAFC)),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "📢 [광고] Google Mobile Ads (AdMob 배너)",
-                    color = Color(0xFF4A5568),
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Bold
+                    text = "🔒 아이용 앱에는 광고가 없습니다.",
+                    color = Color(0xFF718096),
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier.padding(top = 6.dp, bottom = 6.dp)
                 )
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(60.dp)
+                        .background(Color(0xFFE2E8F0))
+                        .padding(8.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "📢 [광고] Google Mobile Ads (AdMob 배너)",
+                        color = Color(0xFF4A5568),
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
             }
         },
         modifier = modifier
@@ -302,7 +315,7 @@ fun ScoreChangeItem(
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
             text = title,
-            fontSize = 12.sp,
+            fontSize = 11.sp,
             fontWeight = FontWeight.Bold,
             color = Color(0xFF3182CE)
         )
@@ -316,7 +329,7 @@ fun ScoreChangeItem(
         }
         Text(
             text = displayText,
-            fontSize = 15.sp,
+            fontSize = 11.sp,
             fontWeight = FontWeight.Bold,
             color = Color(0xFF2D3748)
         )
