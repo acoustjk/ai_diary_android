@@ -56,6 +56,14 @@ fun ParentHomeScreen(
     var pairedChildIds by remember { mutableStateOf(preferenceHelper.pairedChildIds) }
     var childrenMap by remember { mutableStateOf<Map<String, Map<String, Any>>>(emptyMap()) }
 
+    LaunchedEffect(pairedChildIds) {
+        pairedChildIds.forEach { childId ->
+            if (childId.isNotEmpty()) {
+                FirebaseMessaging.getInstance().subscribeToTopic("child_$childId")
+            }
+        }
+    }
+
     fun refreshReports() {
         reports = preferenceHelper.getSavedReports()
     }
