@@ -2,6 +2,7 @@ package com.example.aidiarycheomsak.ui
 
 import android.widget.Toast
 import android.content.Intent
+import android.content.Context
 import android.net.Uri
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.background
@@ -39,6 +40,8 @@ fun SettingsScreen(
     val preferenceHelper = remember { PreferenceHelper(context) }
     var serverUrl by remember { mutableStateOf(preferenceHelper.serverUrl) }
     var isTesting by remember { mutableStateOf(false) }
+    var showDeleteConfirmDialog by remember { mutableStateOf(false) }
+    var isDeleting by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
 
     Scaffold(
@@ -283,6 +286,102 @@ fun SettingsScreen(
                     )
                 }
             }
+
+            // ⚠️ 계정 및 데이터 관리 카드 (탈퇴/삭제)
+            Card(
+                shape = RoundedCornerShape(12.dp),
+                colors = CardDefaults.cardColors(containerColor = Color.White),
+                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Text(
+                        text = "⚠️ 계정 및 데이터 관리",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF2D3748)
+                    )
+
+                    HorizontalDivider(color = Color(0xFFE2E8F0))
+
+                    Text(
+                        text = "기기에 저장된 모든 일기 기록과 서버의 자녀 프로필 데이터가 완전히 삭제되며 복구할 수 없습니다.",
+                        fontSize = 13.sp,
+                        color = Color(0xFFE53E3E),
+                        fontWeight = FontWeight.SemiBold,
+                        lineHeight = 20.sp
+                    )
+
+                    Text(
+                        text = "※ 주의: 데이터 삭제 완료 시 기존에 자녀 프로필에 충전되어 있던 모든 마법이슬도 함께 영구 소멸되며, 환불이나 복구가 불가능합니다.",
+                        fontSize = 12.sp,
+                        color = Color(0xFF718096),
+                        lineHeight = 18.sp
+                    )
+
+                    Button(
+                        onClick = { showDeleteConfirmDialog = true },
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE53E3E)),
+                        modifier = Modifier.fillMaxWidth(),
+                        enabled = !isDeleting
+                    ) {
+                        if (isDeleting) {
+                            CircularProgressIndicator(color = Color.White, modifier = Modifier.size(20.dp))
+                        } else {
+                            Text("초기화 및 모든 데이터 삭제", fontWeight = FontWeight.Bold)
+                        }
+                    }
+                }
+            }
         }
+    }
+
+    if (showDeleteConfirmDialog) {
+        AlertDialog(
+            onDismissRequest = { showDeleteConfirmDialog = false },
+            title = { Text("⚠️ 전체 데이터 삭제 확인", fontWeight = FontWeight.Bold) },
+            text = { 
+                Text("정말로 모든 데이터를 삭제하고 탈퇴하시겠습니까?\n\n이 작업은 되돌릴 수 없으며, 보유 중인 모든 마법이슬(크레딧)과 자녀 정보, 연동 기록이 영구적으로 소멸됩니다.")
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        showDeleteConfirmDialog = false
+                        isDeleting = true
+                        
+                        val db = FirebaseFirestore.getInstance()
+                        val childId = preferenceHelper.childId
+                        
+                        db.collection("children").document(childId).delete()
+                            .addOnSuccessListener {
+                                context.getSharedPreferences("ai_diary_prefs", Context.MODE_PRIVATE)
+                                    .edit().clear().apply()
+                                Toast.makeText(context, "모든 데이터가 삭제되고 초기화되었습니다.", Toast.LENGTH_LONG).show()
+                                isDeleting = false
+                                onRoleChanged()
+                            }
+                            .addOnFailureListener { e ->
+                                // Fallback: clear local preferences to prevent getting locked out
+                                context.getSharedPreferences("ai_diary_prefs", Context.MODE_PRIVATE)
+                                    .edit().clear().apply()
+                                Toast.makeText(context, "서버 데이터 삭제 실패: ${e.localizedMessage}. 로컬 초기화만 진행합니다.", Toast.LENGTH_LONG).show()
+                                isDeleting = false
+                                onRoleChanged()
+                            }
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE53E3E))
+                ) {
+                    Text("삭제하기", fontWeight = FontWeight.Bold)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDeleteConfirmDialog = false }) {
+                    Text("취소")
+                }
+            }
+        )
     }
 }
