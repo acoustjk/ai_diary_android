@@ -248,7 +248,7 @@ fun SettingsScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable {
-                                val serverUrl = preferenceHelper.serverUrl.ifBlank { "https://ai-diary-cheomsak.onrender.com" }
+                                val serverUrl = preferenceHelper.serverUrl.ifBlank { "https://ai-gochi.com" }
                                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse("${serverUrl.trim().removeSuffix("/")}/terms"))
                                 context.startActivity(intent)
                             }
@@ -263,7 +263,7 @@ fun SettingsScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable {
-                                val serverUrl = preferenceHelper.serverUrl.ifBlank { "https://ai-diary-cheomsak.onrender.com" }
+                                val serverUrl = preferenceHelper.serverUrl.ifBlank { "https://ai-gochi.com" }
                                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse("${serverUrl.trim().removeSuffix("/")}/privacy"))
                                 context.startActivity(intent)
                             }
@@ -278,7 +278,7 @@ fun SettingsScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable {
-                                val serverUrl = preferenceHelper.serverUrl.ifBlank { "https://ai-diary-cheomsak.onrender.com" }
+                                val serverUrl = preferenceHelper.serverUrl.ifBlank { "https://ai-gochi.com" }
                                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse("${serverUrl.trim().removeSuffix("/")}/licenses"))
                                 context.startActivity(intent)
                             }

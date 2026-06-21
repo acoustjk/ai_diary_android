@@ -14,7 +14,7 @@ class PreferenceHelper(context: Context) {
         set(value) = prefs.edit().putString("user_role", value).apply()
 
     var serverUrl: String
-        get() = prefs.getString("server_url", "https://ai-diary-cheomsak.onrender.com") ?: "https://ai-diary-cheomsak.onrender.com"
+        get() = prefs.getString("server_url", "https://ai-gochi.com") ?: "https://ai-gochi.com"
         set(value) = prefs.edit().putString("server_url", value).apply()
 
     var geminiApiKey: String
