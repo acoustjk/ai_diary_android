@@ -14,8 +14,23 @@ class PreferenceHelper(context: Context) {
         set(value) = prefs.edit().putString("user_role", value).apply()
 
     var serverUrl: String
-        get() = prefs.getString("server_url", "https://www.ai-gochi.com") ?: "https://www.ai-gochi.com"
-        set(value) = prefs.edit().putString("server_url", value).apply()
+        get() {
+            var url = prefs.getString("server_url", "https://www.ai-gochi.com") ?: "https://www.ai-gochi.com"
+            val normalized = url.trim().removeSuffix("/")
+            if (normalized == "https://ai-gochi.com" || normalized == "https://ai-diary-cheomsak.onrender.com") {
+                url = "https://www.ai-gochi.com"
+                prefs.edit().putString("server_url", url).apply()
+            }
+            return url
+        }
+        set(value) {
+            var url = value.trim()
+            val normalized = url.removeSuffix("/")
+            if (normalized == "https://ai-gochi.com" || normalized == "https://ai-diary-cheomsak.onrender.com") {
+                url = "https://www.ai-gochi.com"
+            }
+            prefs.edit().putString("server_url", url).apply()
+        }
 
     var geminiApiKey: String
         get() = prefs.getString("gemini_api_key", "") ?: ""
