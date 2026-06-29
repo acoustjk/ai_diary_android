@@ -176,14 +176,14 @@ fun ParentDetailScreen(
                                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                     Text(
                                         text = "⏱️ 평균 타수",
-                                        fontSize = 12.sp,
+                                        fontSize = 11.sp,
                                         fontWeight = FontWeight.Bold,
                                         color = Color(0xFF3182CE)
                                     )
                                     Spacer(modifier = Modifier.height(4.dp))
                                     Text(
                                         text = "${report.typingSpeed}타/분",
-                                        fontSize = 15.sp,
+                                        fontSize = 11.sp,
                                         fontWeight = FontWeight.Bold,
                                         color = Color(0xFF2D3748)
                                     )
