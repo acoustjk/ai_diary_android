@@ -108,64 +108,89 @@ fun ParentDetailScreen(
                 colors = CardDefaults.cardColors(containerColor = Color(0xFFEBF8FF)),
                 elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
             ) {
-                Row(
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp),
-                    horizontalArrangement = Arrangement.SpaceAround,
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    ScoreChangeItem(
-                        title = "✨ 맞춤법 점수",
-                        before = report.firstSpellingScore,
-                        after = report.secondSpellingScore,
-                        suffix = "점"
-                    )
-                    Divider(
-                        modifier = Modifier
-                            .height(40.dp)
-                            .width(1.dp),
-                        color = Color(0xFFBEE3F8)
-                    )
-                    ScoreChangeItem(
-                        title = "💡 표현력 점수",
-                        before = report.firstExpressionScore,
-                        after = report.secondExpressionScore,
-                        suffix = "점"
-                    )
-                    Divider(
-                        modifier = Modifier
-                            .height(40.dp)
-                            .width(1.dp),
-                        color = Color(0xFFBEE3F8)
-                    )
-                    ScoreChangeItem(
-                        title = "📝 글자 수",
-                        before = report.displayOriginalLength,
-                        after = report.displayRewrittenLength,
-                        suffix = "자"
-                    )
-                    if (report.typingSpeed > 0) {
+                    // First Row: Spelling & Expression
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
+                            ScoreChangeItem(
+                                title = "✨ 맞춤법 점수",
+                                before = report.firstSpellingScore,
+                                after = report.secondSpellingScore,
+                                suffix = "점"
+                            )
+                        }
                         Divider(
                             modifier = Modifier
                                 .height(40.dp)
                                 .width(1.dp),
                             color = Color(0xFFBEE3F8)
                         )
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text(
-                                text = "⏱️ 평균 타수",
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Color(0xFF3182CE)
+                        Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
+                            ScoreChangeItem(
+                                title = "💡 표현력 점수",
+                                before = report.firstExpressionScore,
+                                after = report.secondExpressionScore,
+                                suffix = "점"
                             )
-                            Spacer(modifier = Modifier.height(4.dp))
-                            Text(
-                                text = "${report.typingSpeed}타/분",
-                                fontSize = 15.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Color(0xFF2D3748)
+                        }
+                    }
+
+                    Divider(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(1.dp),
+                        color = Color(0xFFBEE3F8)
+                    )
+
+                    // Second Row: Character Count & Typing Speed
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
+                            ScoreChangeItem(
+                                title = "📝 글자 수",
+                                before = report.displayOriginalLength,
+                                after = report.displayRewrittenLength,
+                                suffix = "자"
                             )
+                        }
+                        if (report.typingSpeed > 0) {
+                            Divider(
+                                modifier = Modifier
+                                    .height(40.dp)
+                                    .width(1.dp),
+                                color = Color(0xFFBEE3F8)
+                            )
+                            Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
+                                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                    Text(
+                                        text = "⏱️ 평균 타수",
+                                        fontSize = 12.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color(0xFF3182CE)
+                                    )
+                                    Spacer(modifier = Modifier.height(4.dp))
+                                    Text(
+                                        text = "${report.typingSpeed}타/분",
+                                        fontSize = 15.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color(0xFF2D3748)
+                                    )
+                                }
+                            }
+                        } else {
+                            Spacer(modifier = Modifier.weight(1f))
                         }
                     }
                 }
@@ -282,7 +307,7 @@ fun ParentDetailScreen(
                             }
 
                             // Share text back to child
-                            val replyMsg = "💌 [부모님의 칭찬 편지]\n$replyText"
+                            val replyMsg = "💌 [보호자님의 칭찬 편지]\n$replyText"
                             val sendIntent: Intent = Intent().apply {
                                 action = Intent.ACTION_SEND
                                 putExtra(Intent.EXTRA_TEXT, replyMsg)

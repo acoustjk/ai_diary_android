@@ -82,7 +82,7 @@ fun LandingScreen(
 
                 // Parent Card
                 RoleCard(
-                    title = "부모님",
+                    title = "보호자님",
                     icon = "👩",
                     description = "성장 보고서를 보고\n칭찬 답장을 보내요!",
                     backgroundColor = Color(0xFFFFF5F5),
