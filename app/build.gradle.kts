@@ -5,11 +5,34 @@ plugins {
   alias(libs.plugins.google.services)
 }
 
+import java.util.Properties
+import java.io.FileInputStream
+
+val keystoreProperties = Properties().apply {
+    val propertiesFile = rootProject.file("local.properties")
+    if (propertiesFile.exists()) {
+        load(FileInputStream(propertiesFile))
+    }
+}
+
 android {
     namespace = "com.example.aidiarycheomsak"
     compileSdk = 36
+
+    signingConfigs {
+        create("release") {
+            val keyFile = keystoreProperties.getProperty("keystore.file")
+            if (keyFile != null) {
+                storeFile = file(keyFile)
+                storePassword = keystoreProperties.getProperty("keystore.password")
+                keyAlias = keystoreProperties.getProperty("keystore.alias")
+                keyPassword = keystoreProperties.getProperty("keystore.keyPassword")
+            }
+        }
+    }
+
     defaultConfig {
-        applicationId = "com.example.aidiarycheomsak"
+        applicationId = "com.aigochi.child"
         minSdk = 24
         targetSdk = 36
         versionCode = 1
@@ -20,6 +43,7 @@ android {
         release {
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            signingConfig = signingConfigs.getByName("release")
         }
     }
     compileOptions {
