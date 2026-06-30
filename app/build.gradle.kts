@@ -32,7 +32,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.aigochi.child"
+        applicationId = "com.aigochi.student"
         minSdk = 24
         targetSdk = 36
         versionCode = 1
