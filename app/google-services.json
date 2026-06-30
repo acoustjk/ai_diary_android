@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:400225425219:android:474c0240385745199641f6",
         "android_client_info": {
-          "package_name": "com.aigochi.student"
+          "package_name": "com.aigochi.child"
         }
       },
       "oauth_client": [],
@@ -29,6 +29,25 @@
         "mobilesdk_app_id": "1:400225425219:android:adfd35a4574a30289641f6",
         "android_client_info": {
           "package_name": "com.aigochi.parent"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCEDJy7Mlsbd-FW10XhkqtMvW1VtuAjY9E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:400225425219:android:c20598dae62ec9079641f6",
+        "android_client_info": {
+          "package_name": "com.aigochi.student"
         }
       },
       "oauth_client": [],
