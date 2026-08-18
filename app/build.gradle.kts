@@ -35,8 +35,8 @@ android {
         applicationId = "com.aigochi.student"
         minSdk = 24
         targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2
+        versionName = "1.1"
     }
 
     buildTypes {
@@ -108,6 +108,7 @@ dependencies {
   implementation(libs.androidx.lifecycle.viewmodel.navigation3)
 
   // Extra features
+  implementation(libs.androidx.fragment.ktx)
   implementation(libs.androidx.material.icons.extended)
   implementation(libs.generativeai)
   implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
